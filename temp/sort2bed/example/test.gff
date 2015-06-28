@@ -1,0 +1,245 @@
+##gff-version 3
+#!gff-spec-version 1.20
+#!processor NCBI annotwriter
+##sequence-region NC_000962.2 1 4411532
+##species http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=83332
+NC_000962.2	RefSeq	region	1	4411532	.	+	.	ID=id0;Dbxref=taxon:83332;Is_circular=true;gbkey=Src;genome=chromosome;mol_type=genomic DNA;strain=H37Rv
+NC_000962.2	RefSeq	gene	1	1524	.	+	.	ID=gene0;Name=dnaA;Dbxref=GeneID:885041;gbkey=Gene;gene=dnaA;locus_tag=Rv0001
+NC_000962.2	RefSeq	CDS	1	1524	.	+	0	ID=cds0;Name=NP_214515.1;Parent=gene0;Dbxref=Genbank:NP_214515.1,GeneID:885041;gbkey=CDS;product=chromosome replication initiator DnaA;protein_id=NP_214515.1;transl_table=11
+NC_000962.2	RefSeq	region	622	645	.	+	.	ID=id1;Note=PS00017 ATP%2FGTP-binding site motif A %28P-loop%29;Dbxref=GeneID:885041;gbkey=misc_feature
+NC_000962.2	RefSeq	region	1384	1440	.	+	.	ID=id2;Note=PS01008 DnaA protein signature;Dbxref=GeneID:885041;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	2052	3260	.	+	.	ID=gene1;Name=dnaN;Dbxref=GeneID:887092;gbkey=Gene;gene=dnaN;locus_tag=Rv0002
+NC_000962.2	RefSeq	CDS	2052	3260	.	+	0	ID=cds1;Name=NP_214516.1;Parent=gene1;Dbxref=Genbank:NP_214516.1,GeneID:887092;gbkey=CDS;product=DNA polymerase III subunit beta;protein_id=NP_214516.1;transl_table=11
+NC_000962.2	RefSeq	gene	3280	4437	.	+	.	ID=gene2;Name=recF;Dbxref=GeneID:887089;gbkey=Gene;gene=recF;locus_tag=Rv0003
+NC_000962.2	RefSeq	CDS	3280	4437	.	+	0	ID=cds2;Name=NP_214517.1;Parent=gene2;Dbxref=Genbank:NP_214517.1,GeneID:887089;gbkey=CDS;product=recombination protein F;protein_id=NP_214517.1;transl_table=11
+NC_000962.2	RefSeq	region	3367	3390	.	+	.	ID=id3;Note=PS00017 ATP%2FGTP-binding site motif A;Dbxref=GeneID:887089;gbkey=misc_feature
+NC_000962.2	RefSeq	region	3634	3690	.	+	.	ID=id4;Note=PS00617 RecF protein signature 1;Dbxref=GeneID:887089;gbkey=misc_feature
+NC_000962.2	RefSeq	region	4243	4296	.	+	.	ID=id5;Note=PS00618 RecF protein signature 2;Dbxref=GeneID:887089;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	4434	4997	.	+	.	ID=gene3;Name=Rv0004;Dbxref=GeneID:887088;gbkey=Gene;locus_tag=Rv0004
+NC_000962.2	RefSeq	CDS	4434	4997	.	+	0	ID=cds3;Name=NP_214518.1;Parent=gene3;Dbxref=Genbank:NP_214518.1,GeneID:887088;gbkey=CDS;product=hypothetical protein;protein_id=NP_214518.1;transl_table=11
+NC_000962.2	RefSeq	gene	5123	7267	.	+	.	ID=gene4;Name=gyrB;Dbxref=GeneID:887081;gbkey=Gene;gene=gyrB;locus_tag=Rv0005
+NC_000962.2	RefSeq	CDS	5123	7267	.	+	0	ID=cds4;Name=NP_214519.1;Parent=gene4;Dbxref=Genbank:NP_214519.1,GeneID:887081;gbkey=CDS;product=DNA gyrase subunit B;protein_id=NP_214519.1;transl_table=11
+NC_000962.2	RefSeq	region	6608	6634	.	+	.	ID=id6;Note=PS00177 DNA topoisomerase II signature;Dbxref=GeneID:887081;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	7302	9818	.	+	.	ID=gene5;Name=gyrA;Dbxref=GeneID:887105;gbkey=Gene;gene=gyrA;locus_tag=Rv0006
+NC_000962.2	RefSeq	CDS	7302	9818	.	+	0	ID=cds5;Name=NP_214520.1;Parent=gene5;Dbxref=Genbank:NP_214520.1,GeneID:887105;gbkey=CDS;product=DNA gyrase subunit A;protein_id=NP_214520.1;transl_table=11
+NC_000962.2	RefSeq	region	8811	8849	.	+	.	ID=id7;Note=PS00018 EF-hand calcium-binding domain;Dbxref=GeneID:887105;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	9914	10828	.	+	.	ID=gene6;Name=Rv0007;Dbxref=GeneID:885982;gbkey=Gene;locus_tag=Rv0007
+NC_000962.2	RefSeq	CDS	9914	10828	.	+	0	ID=cds6;Name=NP_214521.1;Parent=gene6;Dbxref=Genbank:NP_214521.1,GeneID:885982;gbkey=CDS;product=hypothetical protein;protein_id=NP_214521.1;transl_table=11
+NC_000962.2	RefSeq	gene	10887	10960	.	+	.	ID=gene7;Name=Rvnt01;Note=tRNA-Ile%28GAT%29;Dbxref=GeneID:2700464;gbkey=Gene;locus_tag=Rvnt01
+NC_000962.2	RefSeq	tRNA	10887	10960	.	+	.	ID=rna0;Dbxref=GeneID:2700464;anticodon=%28pos:10921..10923%29;codons=33;gbkey=tRNA;product=tRNA-Ile
+NC_000962.2	RefSeq	exon	10887	10960	.	+	.	ID=id8;Parent=rna0;Dbxref=GeneID:2700464;anticodon=%28pos:10921..10923%29;codons=33;gbkey=tRNA;product=tRNA-Ile
+NC_000962.2	RefSeq	gene	11112	11184	.	+	.	ID=gene8;Name=Rvnt02;Note=tRNA-Ala%28TGC%29;Dbxref=GeneID:2700469;gbkey=Gene;locus_tag=Rvnt02
+NC_000962.2	RefSeq	tRNA	11112	11184	.	+	.	ID=rna1;Dbxref=GeneID:2700469;anticodon=%28pos:11145..11147%29;codons=54;gbkey=tRNA;product=tRNA-Ala
+NC_000962.2	RefSeq	exon	11112	11184	.	+	.	ID=id9;Parent=rna1;Dbxref=GeneID:2700469;anticodon=%28pos:11145..11147%29;codons=54;gbkey=tRNA;product=tRNA-Ala
+NC_000962.2	RefSeq	gene	11874	12311	.	-	.	ID=gene9;Name=Rv0008c;Dbxref=GeneID:887085;gbkey=Gene;locus_tag=Rv0008c
+NC_000962.2	RefSeq	CDS	11874	12311	.	-	0	ID=cds7;Name=NP_214522.1;Parent=gene9;Dbxref=Genbank:NP_214522.1,GeneID:887085;gbkey=CDS;product=hypothetical protein;protein_id=NP_214522.1;transl_table=11
+NC_000962.2	RefSeq	gene	12468	13016	.	+	.	ID=gene10;Name=ppiA;Dbxref=GeneID:887087;gbkey=Gene;gene=ppiA;locus_tag=Rv0009
+NC_000962.2	RefSeq	CDS	12468	13016	.	+	0	ID=cds8;Name=NP_214523.1;Parent=gene10;Dbxref=Genbank:NP_214523.1,GeneID:887087;gbkey=CDS;product=iron-regulated peptidyl-prolyl cis-trans isomerase A;protein_id=NP_214523.1;transl_table=11
+NC_000962.2	RefSeq	gene	13133	13558	.	-	.	ID=gene11;Name=Rv0010c;Dbxref=GeneID:887082;gbkey=Gene;locus_tag=Rv0010c
+NC_000962.2	RefSeq	CDS	13133	13558	.	-	0	ID=cds9;Name=NP_214524.1;Parent=gene11;Dbxref=Genbank:NP_214524.1,GeneID:887082;gbkey=CDS;product=hypothetical protein;protein_id=NP_214524.1;transl_table=11
+NC_000962.2	RefSeq	gene	13714	13995	.	-	.	ID=gene12;Name=Rv0011c;Dbxref=GeneID:887074;gbkey=Gene;locus_tag=Rv0011c
+NC_000962.2	RefSeq	CDS	13714	13995	.	-	0	ID=cds10;Name=NP_214525.1;Parent=gene12;Dbxref=Genbank:NP_214525.1,GeneID:887074;gbkey=CDS;product=septation inhibitor protein;protein_id=NP_214525.1;transl_table=11
+NC_000962.2	RefSeq	gene	14089	14877	.	+	.	ID=gene13;Name=Rv0012;Dbxref=GeneID:887083;gbkey=Gene;locus_tag=Rv0012
+NC_000962.2	RefSeq	CDS	14089	14877	.	+	0	ID=cds11;Name=NP_214526.1;Parent=gene13;Dbxref=Genbank:NP_214526.1,GeneID:887083;gbkey=CDS;product=hypothetical protein;protein_id=NP_214526.1;transl_table=11
+NC_000962.2	RefSeq	gene	14914	15612	.	+	.	ID=gene14;Name=trpG;Dbxref=GeneID:885955;gbkey=Gene;gene=trpG;locus_tag=Rv0013
+NC_000962.2	RefSeq	CDS	14914	15612	.	+	0	ID=cds12;Name=YP_177615.1;Parent=gene14;Dbxref=Genbank:YP_177615.1,GeneID:885955;gbkey=CDS;product=para-aminobenzoate synthase component II;protein_id=YP_177615.1;transl_table=11
+NC_000962.2	RefSeq	region	15100	15150	.	+	.	ID=id10;Note=PS00606 Beta-ketoacyl synthases active site;Dbxref=GeneID:885955;gbkey=misc_feature
+NC_000962.2	RefSeq	region	15145	15180	.	+	.	ID=id11;Note=PS00442 Glutamine amidotransferases class-I active site;Dbxref=GeneID:885955;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	15590	17470	.	-	.	ID=gene15;Name=pknB;Dbxref=GeneID:887072;gbkey=Gene;gene=pknB;locus_tag=Rv0014c
+NC_000962.2	RefSeq	CDS	15590	17470	.	-	0	ID=cds13;Name=NP_214528.1;Parent=gene15;Dbxref=Genbank:NP_214528.1,GeneID:887072;gbkey=CDS;product=Ser%2FThr protein kinase B;protein_id=NP_214528.1;transl_table=11
+NC_000962.2	RefSeq	region	17033	17071	.	-	.	ID=id12;Note=PS00108 Serine%2FThreonine protein kinases active-site signature;Dbxref=GeneID:887072;gbkey=misc_feature
+NC_000962.2	RefSeq	region	17351	17422	.	-	.	ID=id13;Note=PS00107 Protein kinases ATP-binding region signature;Dbxref=GeneID:887072;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	17467	18762	.	-	.	ID=gene16;Name=pknA;Dbxref=GeneID:885953;gbkey=Gene;gene=pknA;locus_tag=Rv0015c
+NC_000962.2	RefSeq	CDS	17467	18762	.	-	0	ID=cds14;Name=NP_214529.1;Parent=gene16;Dbxref=Genbank:NP_214529.1,GeneID:885953;gbkey=CDS;product=Ser%2FThr protein kinase A;protein_id=NP_214529.1;transl_table=11
+NC_000962.2	RefSeq	region	18316	18354	.	-	.	ID=id14;Note=PS00108 Serine%2FThreonine protein kinases active-site signature;Dbxref=GeneID:885953;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	18759	20234	.	-	.	ID=gene17;Name=pbpA;Dbxref=GeneID:887078;gbkey=Gene;gene=pbpA;locus_tag=Rv0016c
+NC_000962.2	RefSeq	CDS	18759	20234	.	-	0	ID=cds15;Name=NP_214530.1;Parent=gene17;Dbxref=Genbank:NP_214530.1,GeneID:887078;gbkey=CDS;product=penicillin-binding protein PbpA;protein_id=NP_214530.1;transl_table=11
+NC_000962.2	RefSeq	gene	20231	21640	.	-	.	ID=gene18;Name=rodA;Dbxref=GeneID:887075;gbkey=Gene;gene=rodA;locus_tag=Rv0017c
+NC_000962.2	RefSeq	CDS	20231	21640	.	-	0	ID=cds16;Name=NP_214531.1;Parent=gene18;Dbxref=Genbank:NP_214531.1,GeneID:887075;gbkey=CDS;product=cell division protein RodA;protein_id=NP_214531.1;transl_table=11
+NC_000962.2	RefSeq	gene	21637	23181	.	-	.	ID=gene19;Name=ppp;Dbxref=GeneID:887070;gbkey=Gene;gene=ppp;locus_tag=Rv0018c
+NC_000962.2	RefSeq	CDS	21637	23181	.	-	0	ID=cds17;Name=NP_214532.1;Parent=gene19;Dbxref=Genbank:NP_214532.1,GeneID:887070;gbkey=CDS;product=serine%2Fthreonine phosphatase;protein_id=NP_214532.1;transl_table=11
+NC_000962.2	RefSeq	repeat_region	23173	23273	.	-	.	ID=id15;Note=101 bp Mycobacterial Interspersed Repetitive Unit%2C Class I. See Supply et al. %281997%29 Molecular Microbiology 26%2C 991-1003;gbkey=repeat_region
+NC_000962.2	RefSeq	gene	23270	23737	.	-	.	ID=gene20;Name=Rv0019c;Dbxref=GeneID:887079;gbkey=Gene;locus_tag=Rv0019c
+NC_000962.2	RefSeq	CDS	23270	23737	.	-	0	ID=cds18;Name=NP_214533.1;Parent=gene20;Dbxref=Genbank:NP_214533.1,GeneID:887079;gbkey=CDS;product=hypothetical protein;protein_id=NP_214533.1;transl_table=11
+NC_000962.2	RefSeq	gene	23861	25444	.	-	.	ID=gene21;Name=TB39.8;Dbxref=GeneID:887067;gbkey=Gene;gene=TB39.8;locus_tag=Rv0020c
+NC_000962.2	RefSeq	CDS	23861	25444	.	-	0	ID=cds19;Name=NP_214534.1;Parent=gene21;Dbxref=Genbank:NP_214534.1,GeneID:887067;gbkey=CDS;product=hypothetical protein;protein_id=NP_214534.1;transl_table=11
+NC_000962.2	RefSeq	gene	25644	25726	.	+	.	ID=gene22;Name=Rvnt03;Note=tRNA-Leu%28CAG%29;Dbxref=GeneID:2700444;gbkey=Gene;locus_tag=Rvnt03
+NC_000962.2	RefSeq	tRNA	25644	25726	.	+	.	ID=rna2;Dbxref=GeneID:2700444;anticodon=%28pos:25677..25679%29;codons=19;gbkey=tRNA;product=tRNA-Leu
+NC_000962.2	RefSeq	exon	25644	25726	.	+	.	ID=id16;Parent=rna2;Dbxref=GeneID:2700444;anticodon=%28pos:25677..25679%29;codons=19;gbkey=tRNA;product=tRNA-Leu
+NC_000962.2	RefSeq	gene	25913	26881	.	-	.	ID=gene23;Name=Rv0021c;Dbxref=GeneID:887066;gbkey=Gene;locus_tag=Rv0021c
+NC_000962.2	RefSeq	CDS	25913	26881	.	-	0	ID=cds20;Name=NP_214535.1;Parent=gene23;Dbxref=Genbank:NP_214535.1,GeneID:887066;gbkey=CDS;product=hypothetical protein;protein_id=NP_214535.1;transl_table=11
+NC_000962.2	RefSeq	gene	27023	27442	.	-	.	ID=gene24;Name=whiB5;Dbxref=GeneID:887071;gbkey=Gene;gene=whiB5;locus_tag=Rv0022c
+NC_000962.2	RefSeq	CDS	27023	27442	.	-	0	ID=cds21;Name=NP_214536.1;Parent=gene24;Dbxref=Genbank:NP_214536.1,GeneID:887071;gbkey=CDS;product=transcriptional regulatory protein WHIB-like WHIB5;protein_id=NP_214536.1;transl_table=11
+NC_000962.2	RefSeq	gene	27595	28365	.	+	.	ID=gene25;Name=Rv0023;Dbxref=GeneID:887062;gbkey=Gene;locus_tag=Rv0023
+NC_000962.2	RefSeq	CDS	27595	28365	.	+	0	ID=cds22;Name=NP_214537.1;Parent=gene25;Dbxref=Genbank:NP_214537.1,GeneID:887062;gbkey=CDS;product=transcriptional regulator;protein_id=NP_214537.1;transl_table=11
+NC_000962.2	RefSeq	gene	28362	29207	.	+	.	ID=gene26;Name=Rv0024;Dbxref=GeneID:887061;gbkey=Gene;locus_tag=Rv0024
+NC_000962.2	RefSeq	CDS	28362	29207	.	+	0	ID=cds23;Name=NP_214538.1;Parent=gene26;Dbxref=Genbank:NP_214538.1,GeneID:887061;gbkey=CDS;product=protein P60-related protein;protein_id=NP_214538.1;transl_table=11
+NC_000962.2	RefSeq	gene	29245	29607	.	+	.	ID=gene27;Name=Rv0025;Dbxref=GeneID:887060;gbkey=Gene;locus_tag=Rv0025
+NC_000962.2	RefSeq	CDS	29245	29607	.	+	0	ID=cds24;Name=NP_214539.1;Parent=gene27;Dbxref=Genbank:NP_214539.1,GeneID:887060;gbkey=CDS;product=hypothetical protein;protein_id=NP_214539.1;transl_table=11
+NC_000962.2	RefSeq	gene	29722	31068	.	+	.	ID=gene28;Name=Rv0026;Dbxref=GeneID:887057;gbkey=Gene;locus_tag=Rv0026
+NC_000962.2	RefSeq	CDS	29722	31068	.	+	0	ID=cds25;Name=NP_214540.1;Parent=gene28;Dbxref=Genbank:NP_214540.1,GeneID:887057;gbkey=CDS;product=hypothetical protein;protein_id=NP_214540.1;transl_table=11
+NC_000962.2	RefSeq	gene	31189	31506	.	+	.	ID=gene29;Name=Rv0027;Dbxref=GeneID:887054;gbkey=Gene;locus_tag=Rv0027
+NC_000962.2	RefSeq	CDS	31189	31506	.	+	0	ID=cds26;Name=NP_214541.1;Parent=gene29;Dbxref=Genbank:NP_214541.1,GeneID:887054;gbkey=CDS;product=hypothetical protein;protein_id=NP_214541.1;transl_table=11
+NC_000962.2	RefSeq	gene	31514	31819	.	+	.	ID=gene30;Name=Rv0028;Dbxref=GeneID:885812;gbkey=Gene;locus_tag=Rv0028
+NC_000962.2	RefSeq	CDS	31514	31819	.	+	0	ID=cds27;Name=NP_214542.1;Parent=gene30;Dbxref=Genbank:NP_214542.1,GeneID:885812;gbkey=CDS;product=hypothetical protein;protein_id=NP_214542.1;transl_table=11
+NC_000962.2	RefSeq	gene	32057	33154	.	+	.	ID=gene31;Name=Rv0029;Dbxref=GeneID:887053;gbkey=Gene;locus_tag=Rv0029
+NC_000962.2	RefSeq	CDS	32057	33154	.	+	0	ID=cds28;Name=NP_214543.1;Parent=gene31;Dbxref=Genbank:NP_214543.1,GeneID:887053;gbkey=CDS;product=hypothetical protein;protein_id=NP_214543.1;transl_table=11
+NC_000962.2	RefSeq	gene	33224	33553	.	+	.	ID=gene32;Name=Rv0030;Dbxref=GeneID:887051;gbkey=Gene;locus_tag=Rv0030
+NC_000962.2	RefSeq	CDS	33224	33553	.	+	0	ID=cds29;Name=NP_214544.1;Parent=gene32;Dbxref=Genbank:NP_214544.1,GeneID:887051;gbkey=CDS;product=hypothetical protein;protein_id=NP_214544.1;transl_table=11
+NC_000962.2	RefSeq	gene	33582	33794	.	+	.	ID=gene33;Name=Rv0031;Dbxref=GeneID:887049;gbkey=Gene;locus_tag=Rv0031
+NC_000962.2	RefSeq	CDS	33582	33794	.	+	0	ID=cds30;Name=NP_214545.1;Parent=gene33;Dbxref=Genbank:NP_214545.1,GeneID:887049;gbkey=CDS;product=remnant of A transposase;protein_id=NP_214545.1;transl_table=11
+NC_000962.2	RefSeq	gene	34295	36610	.	+	.	ID=gene34;Name=bioF2;Dbxref=GeneID:887050;gbkey=Gene;gene=bioF2;locus_tag=Rv0032
+NC_000962.2	RefSeq	CDS	34295	36610	.	+	0	ID=cds31;Name=NP_214546.1;Parent=gene34;Dbxref=Genbank:NP_214546.1,GeneID:887050;gbkey=CDS;product=8-amino-7-oxononanoate synthase;protein_id=NP_214546.1;transl_table=11
+NC_000962.2	RefSeq	region	36128	36157	.	+	.	ID=id17;Note=PS00599 Aminotransferases class-II pyridoxal-phosphate attachment site;Dbxref=GeneID:887050;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	36607	36870	.	+	.	ID=gene35;Name=acpA;Dbxref=GeneID:887052;gbkey=Gene;gene=acpA;locus_tag=Rv0033
+NC_000962.2	RefSeq	CDS	36607	36870	.	+	0	ID=cds32;Name=NP_214547.1;Parent=gene35;Dbxref=Genbank:NP_214547.1,GeneID:887052;gbkey=CDS;product=acyl carrier protein;protein_id=NP_214547.1;transl_table=11
+NC_000962.2	RefSeq	gene	36867	37262	.	+	.	ID=gene36;Name=Rv0034;Dbxref=GeneID:887046;gbkey=Gene;locus_tag=Rv0034
+NC_000962.2	RefSeq	CDS	36867	37262	.	+	0	ID=cds33;Name=NP_214548.1;Parent=gene36;Dbxref=Genbank:NP_214548.1,GeneID:887046;gbkey=CDS;product=hypothetical protein;protein_id=NP_214548.1;transl_table=11
+NC_000962.2	RefSeq	gene	37259	38947	.	+	.	ID=gene37;Name=fadD34;Dbxref=GeneID:887048;gbkey=Gene;gene=fadD34;locus_tag=Rv0035
+NC_000962.2	RefSeq	CDS	37259	38947	.	+	0	ID=cds34;Name=YP_177686.1;Parent=gene37;Dbxref=Genbank:YP_177686.1,GeneID:887048;gbkey=CDS;product=fatty-acid--CoA ligase;protein_id=YP_177686.1;transl_table=11
+NC_000962.2	RefSeq	gene	39056	39829	.	-	.	ID=gene38;Name=Rv0036c;Dbxref=GeneID:887043;gbkey=Gene;locus_tag=Rv0036c
+NC_000962.2	RefSeq	CDS	39056	39829	.	-	0	ID=cds35;Name=NP_214550.1;Parent=gene38;Dbxref=Genbank:NP_214550.1,GeneID:887043;gbkey=CDS;product=hypothetical protein;protein_id=NP_214550.1;transl_table=11
+NC_000962.2	RefSeq	gene	39877	41202	.	-	.	ID=gene39;Name=Rv0037c;Dbxref=GeneID:887042;gbkey=Gene;locus_tag=Rv0037c
+NC_000962.2	RefSeq	CDS	39877	41202	.	-	0	ID=cds36;Name=NP_214551.1;Parent=gene39;Dbxref=Genbank:NP_214551.1,GeneID:887042;gbkey=CDS;product=hypothetical protein;protein_id=NP_214551.1;transl_table=11
+NC_000962.2	RefSeq	gene	41304	41912	.	+	.	ID=gene40;Name=Rv0038;Dbxref=GeneID:887045;gbkey=Gene;locus_tag=Rv0038
+NC_000962.2	RefSeq	CDS	41304	41912	.	+	0	ID=cds37;Name=NP_214552.1;Parent=gene40;Dbxref=Genbank:NP_214552.1,GeneID:887045;gbkey=CDS;product=hypothetical protein;protein_id=NP_214552.1;transl_table=11
+NC_000962.2	RefSeq	gene	42004	42351	.	-	.	ID=gene41;Name=Rv0039c;Dbxref=GeneID:887038;gbkey=Gene;locus_tag=Rv0039c
+NC_000962.2	RefSeq	CDS	42004	42351	.	-	0	ID=cds38;Name=NP_214553.1;Parent=gene41;Dbxref=Genbank:NP_214553.1,GeneID:887038;gbkey=CDS;product=transmembrane protein;protein_id=NP_214553.1;transl_table=11
+NC_000962.2	RefSeq	gene	42433	43365	.	-	.	ID=gene42;Name=mtc28;Dbxref=GeneID:887037;gbkey=Gene;gene=mtc28;locus_tag=Rv0040c
+NC_000962.2	RefSeq	CDS	42433	43365	.	-	0	ID=cds39;Name=NP_214554.2;Parent=gene42;Dbxref=Genbank:NP_214554.2,GeneID:887037;gbkey=CDS;product=hypothetical protein;protein_id=NP_214554.2;transl_table=11
+NC_000962.2	RefSeq	gene	43562	46471	.	+	.	ID=gene43;Name=leuS;Dbxref=GeneID:887040;gbkey=Gene;gene=leuS;locus_tag=Rv0041
+NC_000962.2	RefSeq	CDS	43562	46471	.	+	0	ID=cds40;Name=NP_214555.1;Parent=gene43;Dbxref=Genbank:NP_214555.1,GeneID:887040;gbkey=CDS;product=leucyl-tRNA synthetase;protein_id=NP_214555.1;transl_table=11
+NC_000962.2	RefSeq	region	43799	43831	.	+	.	ID=id18;Note=PS00178 Aminoacyl-transfer RNA synthetases class-I signature;Dbxref=GeneID:887040;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	46581	47207	.	-	.	ID=gene44;Name=Rv0042c;Dbxref=GeneID:887034;gbkey=Gene;locus_tag=Rv0042c
+NC_000962.2	RefSeq	CDS	46581	47207	.	-	0	ID=cds41;Name=NP_214556.1;Parent=gene44;Dbxref=Genbank:NP_214556.1,GeneID:887034;gbkey=CDS;product=MarR family transcriptional regulator;protein_id=NP_214556.1;transl_table=11
+NC_000962.2	RefSeq	gene	47366	48100	.	-	.	ID=gene45;Name=Rv0043c;Dbxref=GeneID:887032;gbkey=Gene;locus_tag=Rv0043c
+NC_000962.2	RefSeq	CDS	47366	48100	.	-	0	ID=cds42;Name=NP_214557.1;Parent=gene45;Dbxref=Genbank:NP_214557.1,GeneID:887032;gbkey=CDS;product=GntR family transcriptional regulator;protein_id=NP_214557.1;transl_table=11
+NC_000962.2	RefSeq	gene	48233	49027	.	-	.	ID=gene46;Name=Rv0044c;Dbxref=GeneID:887030;gbkey=Gene;locus_tag=Rv0044c
+NC_000962.2	RefSeq	CDS	48233	49027	.	-	0	ID=cds43;Name=NP_214558.1;Parent=gene46;Dbxref=Genbank:NP_214558.1,GeneID:887030;gbkey=CDS;product=oxidoreductase;protein_id=NP_214558.1;transl_table=11
+NC_000962.2	RefSeq	gene	49043	49939	.	-	.	ID=gene47;Name=Rv0045c;Dbxref=GeneID:887029;gbkey=Gene;locus_tag=Rv0045c
+NC_000962.2	RefSeq	CDS	49043	49939	.	-	0	ID=cds44;Name=NP_214559.1;Parent=gene47;Dbxref=Genbank:NP_214559.1,GeneID:887029;gbkey=CDS;product=hydrolase;protein_id=NP_214559.1;transl_table=11
+NC_000962.2	RefSeq	gene	50021	51124	.	-	.	ID=gene48;Name=ino1;Dbxref=GeneID:887028;gbkey=Gene;gene=ino1;locus_tag=Rv0046c
+NC_000962.2	RefSeq	CDS	50021	51124	.	-	0	ID=cds45;Name=NP_214560.1;Parent=gene48;Dbxref=Genbank:NP_214560.1,GeneID:887028;gbkey=CDS;product=myo-inositol-1-phosphate synthase;protein_id=NP_214560.1;transl_table=11
+NC_000962.2	RefSeq	gene	51185	51727	.	-	.	ID=gene49;Name=Rv0047c;Dbxref=GeneID:887031;gbkey=Gene;locus_tag=Rv0047c
+NC_000962.2	RefSeq	CDS	51185	51727	.	-	0	ID=cds46;Name=NP_214561.1;Parent=gene49;Dbxref=Genbank:NP_214561.1,GeneID:887031;gbkey=CDS;product=hypothetical protein;protein_id=NP_214561.1;transl_table=11
+NC_000962.2	RefSeq	gene	51828	52697	.	-	.	ID=gene50;Name=Rv0048c;Dbxref=GeneID:887027;gbkey=Gene;locus_tag=Rv0048c
+NC_000962.2	RefSeq	CDS	51828	52697	.	-	0	ID=cds47;Name=NP_214562.1;Parent=gene50;Dbxref=Genbank:NP_214562.1,GeneID:887027;gbkey=CDS;product=hypothetical protein;protein_id=NP_214562.1;transl_table=11
+NC_000962.2	RefSeq	gene	52831	53244	.	+	.	ID=gene51;Name=Rv0049;Dbxref=GeneID:887024;gbkey=Gene;locus_tag=Rv0049
+NC_000962.2	RefSeq	CDS	52831	53244	.	+	0	ID=cds48;Name=NP_214563.1;Parent=gene51;Dbxref=Genbank:NP_214563.1,GeneID:887024;gbkey=CDS;product=hypothetical protein;protein_id=NP_214563.1;transl_table=11
+NC_000962.2	RefSeq	gene	53663	55699	.	+	.	ID=gene52;Name=ponA1;Dbxref=GeneID:887065;gbkey=Gene;gene=ponA1;locus_tag=Rv0050
+NC_000962.2	RefSeq	CDS	53663	55699	.	+	0	ID=cds49;Name=YP_177687.1;Parent=gene52;Dbxref=Genbank:YP_177687.1,GeneID:887065;gbkey=CDS;product=bifunctional penicillin-binding protein 1A%2F1B;protein_id=YP_177687.1;transl_table=11
+NC_000962.2	RefSeq	gene	55696	57378	.	+	.	ID=gene53;Name=Rv0051;Dbxref=GeneID:887018;gbkey=Gene;locus_tag=Rv0051
+NC_000962.2	RefSeq	CDS	55696	57378	.	+	0	ID=cds50;Name=NP_214565.1;Parent=gene53;Dbxref=Genbank:NP_214565.1,GeneID:887018;gbkey=CDS;product=transmembrane protein;protein_id=NP_214565.1;transl_table=11
+NC_000962.2	RefSeq	gene	57398	57973	.	+	.	ID=gene54;Name=Rv0052;Dbxref=GeneID:887015;gbkey=Gene;locus_tag=Rv0052
+NC_000962.2	RefSeq	CDS	57398	57973	.	+	0	ID=cds51;Name=NP_214566.2;Parent=gene54;Dbxref=Genbank:NP_214566.2,GeneID:887015;gbkey=CDS;product=hypothetical protein;protein_id=NP_214566.2;transl_table=11
+NC_000962.2	RefSeq	gene	58192	58482	.	+	.	ID=gene55;Name=rpsF;Dbxref=GeneID:887020;gbkey=Gene;gene=rpsF;locus_tag=Rv0053
+NC_000962.2	RefSeq	CDS	58192	58482	.	+	0	ID=cds52;Name=NP_214567.1;Parent=gene55;Dbxref=Genbank:NP_214567.1,GeneID:887020;gbkey=CDS;product=30S ribosomal protein S6;protein_id=NP_214567.1;transl_table=11
+NC_000962.2	RefSeq	region	58318	58347	.	+	.	ID=id19;Note=PS01048 Ribosomal protein S6 signature;Dbxref=GeneID:887020;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	58586	59080	.	+	.	ID=gene56;Name=ssb;Dbxref=GeneID:887013;gbkey=Gene;gene=ssb;locus_tag=Rv0054
+NC_000962.2	RefSeq	CDS	58586	59080	.	+	0	ID=cds53;Name=NP_214568.1;Parent=gene56;Dbxref=Genbank:NP_214568.1,GeneID:887013;gbkey=CDS;product=single-stranded DNA-binding protein;protein_id=NP_214568.1;transl_table=11
+NC_000962.2	RefSeq	gene	59122	59376	.	+	.	ID=gene57;Name=rpsR;Dbxref=GeneID:887022;gbkey=Gene;gene=rpsR;locus_tag=Rv0055
+NC_000962.2	RefSeq	CDS	59122	59376	.	+	0	ID=cds54;Name=YP_177688.1;Parent=gene57;Dbxref=Genbank:YP_177688.1,GeneID:887022;gbkey=CDS;product=30S ribosomal protein S18;protein_id=YP_177688.1;transl_table=11
+NC_000962.2	RefSeq	gene	59409	59867	.	+	.	ID=gene58;Name=rplI;Dbxref=GeneID:887010;gbkey=Gene;gene=rplI;locus_tag=Rv0056
+NC_000962.2	RefSeq	CDS	59409	59867	.	+	0	ID=cds55;Name=NP_214570.1;Parent=gene58;Dbxref=Genbank:NP_214570.1,GeneID:887010;gbkey=CDS;product=50S ribosomal protein L9;protein_id=NP_214570.1;transl_table=11
+NC_000962.2	RefSeq	region	59445	59528	.	+	.	ID=id20;Note=PS00651 Ribosomal protein L9 signature;Dbxref=GeneID:887010;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	59896	60417	.	+	.	ID=gene59;Name=Rv0057;Dbxref=GeneID:887008;gbkey=Gene;locus_tag=Rv0057
+NC_000962.2	RefSeq	CDS	59896	60417	.	+	0	ID=cds56;Name=NP_214571.1;Parent=gene59;Dbxref=Genbank:NP_214571.1,GeneID:887008;gbkey=CDS;product=hypothetical protein;protein_id=NP_214571.1;transl_table=11
+NC_000962.2	RefSeq	gene	60396	63020	.	+	.	ID=gene60;Name=dnaB;Dbxref=GeneID:887009;gbkey=Gene;gene=dnaB;locus_tag=Rv0058
+NC_000962.2	RefSeq	CDS	60396	63020	.	+	0	ID=cds57;Name=NP_214572.1;Parent=gene60;Dbxref=Genbank:NP_214572.1,GeneID:887009;gbkey=CDS;product=replicative DNA helicase;protein_id=NP_214572.1;transl_table=11
+NC_000962.2	RefSeq	region	61071	61094	.	+	.	ID=id21;Note=PS00017 ATP%2FGTP-binding site motif A;Dbxref=GeneID:887009;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	63200	63892	.	+	.	ID=gene61;Name=Rv0059;Dbxref=GeneID:887006;gbkey=Gene;locus_tag=Rv0059
+NC_000962.2	RefSeq	CDS	63200	63892	.	+	0	ID=cds58;Name=NP_214573.1;Parent=gene61;Dbxref=Genbank:NP_214573.1,GeneID:887006;gbkey=CDS;product=hypothetical protein;protein_id=NP_214573.1;transl_table=11
+NC_000962.2	RefSeq	gene	63909	64967	.	+	.	ID=gene62;Name=Rv0060;Dbxref=GeneID:887004;gbkey=Gene;locus_tag=Rv0060
+NC_000962.2	RefSeq	CDS	63909	64967	.	+	0	ID=cds59;Name=NP_214574.1;Parent=gene62;Dbxref=Genbank:NP_214574.1,GeneID:887004;gbkey=CDS;product=hypothetical protein;protein_id=NP_214574.1;transl_table=11
+NC_000962.2	RefSeq	gene	64991	65416	.	+	.	ID=gene63;Name=Rv0061;Dbxref=GeneID:887003;gbkey=Gene;locus_tag=Rv0061
+NC_000962.2	RefSeq	CDS	64991	65416	.	+	0	ID=cds60;Name=NP_214575.1;Parent=gene63;Dbxref=Genbank:NP_214575.1,GeneID:887003;gbkey=CDS;product=hypothetical protein;protein_id=NP_214575.1;transl_table=11
+NC_000962.2	RefSeq	gene	65552	66694	.	+	.	ID=gene64;Name=celA1;Dbxref=GeneID:887007;gbkey=Gene;gene=celA1;locus_tag=Rv0062
+NC_000962.2	RefSeq	CDS	65552	66694	.	+	0	ID=cds61;Name=YP_177689.1;Parent=gene64;Dbxref=Genbank:YP_177689.1,GeneID:887007;gbkey=CDS;product=endo-1%2C4-beta-glucanase;protein_id=YP_177689.1;transl_table=11
+NC_000962.2	RefSeq	gene	66923	68362	.	+	.	ID=gene65;Name=Rv0063;Dbxref=GeneID:886999;gbkey=Gene;locus_tag=Rv0063
+NC_000962.2	RefSeq	CDS	66923	68362	.	+	0	ID=cds62;Name=NP_214577.1;Parent=gene65;Dbxref=Genbank:NP_214577.1,GeneID:886999;gbkey=CDS;product=oxidoreductase;protein_id=NP_214577.1;transl_table=11
+NC_000962.2	RefSeq	region	67142	67243	.	+	.	ID=id22;Note=PS00862 Oxygen oxidoreductases covalent FAD-binding site;Dbxref=GeneID:886999;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	68620	71559	.	+	.	ID=gene66;Name=Rv0064;Dbxref=GeneID:886996;gbkey=Gene;locus_tag=Rv0064
+NC_000962.2	RefSeq	CDS	68620	71559	.	+	0	ID=cds63;Name=NP_214578.1;Parent=gene66;Dbxref=Genbank:NP_214578.1,GeneID:886996;gbkey=CDS;product=hypothetical protein;protein_id=NP_214578.1;transl_table=11
+NC_000962.2	RefSeq	gene	71821	72222	.	+	.	ID=gene67;Name=Rv0065;Dbxref=GeneID:886993;gbkey=Gene;locus_tag=Rv0065
+NC_000962.2	RefSeq	CDS	71821	72222	.	+	0	ID=cds64;Name=NP_214579.1;Parent=gene67;Dbxref=Genbank:NP_214579.1,GeneID:886993;gbkey=CDS;product=hypothetical protein;protein_id=NP_214579.1;transl_table=11
+NC_000962.2	RefSeq	gene	72274	74511	.	-	.	ID=gene68;Name=icd2;Dbxref=GeneID:887016;gbkey=Gene;gene=icd2;locus_tag=Rv0066c
+NC_000962.2	RefSeq	CDS	72274	74511	.	-	0	ID=cds65;Name=NP_214580.1;Parent=gene68;Dbxref=Genbank:NP_214580.1,GeneID:887016;gbkey=CDS;product=isocitrate dehydrogenase;protein_id=NP_214580.1;transl_table=11
+NC_000962.2	RefSeq	gene	74629	75198	.	-	.	ID=gene69;Name=Rv0067c;Dbxref=GeneID:886991;gbkey=Gene;locus_tag=Rv0067c
+NC_000962.2	RefSeq	CDS	74629	75198	.	-	0	ID=cds66;Name=NP_214581.1;Parent=gene69;Dbxref=Genbank:NP_214581.1,GeneID:886991;gbkey=CDS;product=TetR family transcriptional regulator;protein_id=NP_214581.1;transl_table=11
+NC_000962.2	RefSeq	gene	75301	76212	.	+	.	ID=gene70;Name=Rv0068;Dbxref=GeneID:886989;gbkey=Gene;locus_tag=Rv0068
+NC_000962.2	RefSeq	CDS	75301	76212	.	+	0	ID=cds67;Name=NP_214582.1;Parent=gene70;Dbxref=Genbank:NP_214582.1,GeneID:886989;gbkey=CDS;product=short-chain dehydrogenase;protein_id=NP_214582.1;transl_table=11
+NC_000962.2	RefSeq	gene	76237	77622	.	-	.	ID=gene71;Name=sdaA;Dbxref=GeneID:886986;gbkey=Gene;gene=sdaA;locus_tag=Rv0069c
+NC_000962.2	RefSeq	CDS	76237	77622	.	-	0	ID=cds68;Name=NP_214583.1;Parent=gene71;Dbxref=Genbank:NP_214583.1,GeneID:886986;gbkey=CDS;product=L-serine dehydratase SdaA;protein_id=NP_214583.1;transl_table=11
+NC_000962.2	RefSeq	gene	77619	78896	.	-	.	ID=gene72;Name=glyA;Dbxref=GeneID:886983;gbkey=Gene;gene=glyA;locus_tag=Rv0070c
+NC_000962.2	RefSeq	CDS	77619	78896	.	-	0	ID=cds69;Name=NP_214584.1;Parent=gene72;Dbxref=Genbank:NP_214584.1,GeneID:886983;gbkey=CDS;product=serine hydroxymethyltransferase;protein_id=NP_214584.1;transl_table=11
+NC_000962.2	RefSeq	region	78183	78233	.	-	.	ID=id23;Note=PS00096 Serine hydroxymethyltransferase pyridoxal-phosphate attachment site;Dbxref=GeneID:886983;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	79486	80193	.	+	.	ID=gene73;Name=Rv0071;Dbxref=GeneID:886988;gbkey=Gene;locus_tag=Rv0071
+NC_000962.2	RefSeq	CDS	79486	80193	.	+	0	ID=cds70;Name=NP_214585.1;Parent=gene73;Dbxref=Genbank:NP_214585.1,GeneID:886988;gbkey=CDS;product=maturase;protein_id=NP_214585.1;transl_table=11
+NC_000962.2	RefSeq	repeat_region	79507	79551	.	+	.	ID=id24;Note=5 x 9 bp GTGGACCCG repeats;Dbxref=GeneID:886988;gbkey=repeat_region
+NC_000962.2	RefSeq	repeat_region	80236	80550	.	+	.	ID=id25;Note=%28MTV030.15%29%2C len: 315 bp. Probable REP%27-1 pseudogene fragment%2C similar to many Mycobacterium tuberculosis proteins inside REP13E12 elements e.g. Q50655%7CZ95390%7CMTCY13E12.20 %28317 aa%29%2C FASTA scores%3B opt: 324 E%28%29: 6.8e-17%2C 43.4%25 identity in 99 aa overlap%2C but no possible startsite.%3B REP%27-1;gbkey=repeat_region
+NC_000962.2	RefSeq	gene	80624	81673	.	+	.	ID=gene74;Name=Rv0072;Dbxref=GeneID:886984;gbkey=Gene;locus_tag=Rv0072
+NC_000962.2	RefSeq	CDS	80624	81673	.	+	0	ID=cds71;Name=NP_214586.1;Parent=gene74;Dbxref=Genbank:NP_214586.1,GeneID:886984;gbkey=CDS;product=glutamine-transport transmembrane protein ABC transporter;protein_id=NP_214586.1;transl_table=11
+NC_000962.2	RefSeq	gene	81676	82668	.	+	.	ID=gene75;Name=Rv0073;Dbxref=GeneID:886977;gbkey=Gene;locus_tag=Rv0073
+NC_000962.2	RefSeq	CDS	81676	82668	.	+	0	ID=cds72;Name=NP_214587.1;Parent=gene75;Dbxref=Genbank:NP_214587.1,GeneID:886977;gbkey=CDS;product=glutamine ABC transporter ATP-binding protein;protein_id=NP_214587.1;transl_table=11
+NC_000962.2	RefSeq	region	81793	81816	.	+	.	ID=id26;Note=PS00017 ATP%2FGTP-binding site motif A %28P-loop%29;Dbxref=GeneID:886977;gbkey=misc_feature
+NC_000962.2	RefSeq	region	82105	82149	.	+	.	ID=id27;Note=PS00211 ABC transporters family signature;Dbxref=GeneID:886977;gbkey=misc_feature
+NC_000962.2	RefSeq	region	82507	82560	.	+	.	ID=id28;Note=PS00889 Cyclic nucleotide-binding domain signature 2;Dbxref=GeneID:886977;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	82748	83983	.	+	.	ID=gene76;Name=Rv0074;Dbxref=GeneID:886976;gbkey=Gene;locus_tag=Rv0074
+NC_000962.2	RefSeq	CDS	82748	83983	.	+	0	ID=cds73;Name=NP_214588.1;Parent=gene76;Dbxref=Genbank:NP_214588.1,GeneID:886976;gbkey=CDS;product=hypothetical protein;protein_id=NP_214588.1;transl_table=11
+NC_000962.2	RefSeq	gene	83996	85168	.	+	.	ID=gene77;Name=Rv0075;Dbxref=GeneID:886982;gbkey=Gene;locus_tag=Rv0075
+NC_000962.2	RefSeq	CDS	83996	85168	.	+	0	ID=cds74;Name=NP_214589.1;Parent=gene77;Dbxref=Genbank:NP_214589.1,GeneID:886982;gbkey=CDS;product=aminotransferase;protein_id=NP_214589.1;transl_table=11
+NC_000962.2	RefSeq	gene	85183	85572	.	-	.	ID=gene78;Name=Rv0076c;Dbxref=GeneID:886992;gbkey=Gene;locus_tag=Rv0076c
+NC_000962.2	RefSeq	CDS	85183	85572	.	-	0	ID=cds75;Name=NP_214590.1;Parent=gene78;Dbxref=Genbank:NP_214590.1,GeneID:886992;gbkey=CDS;product=hypothetical protein;protein_id=NP_214590.1;transl_table=11
+NC_000962.2	RefSeq	gene	85636	86466	.	-	.	ID=gene79;Name=Rv0077c;Dbxref=GeneID:886969;gbkey=Gene;locus_tag=Rv0077c
+NC_000962.2	RefSeq	CDS	85636	86466	.	-	0	ID=cds76;Name=NP_214591.1;Parent=gene79;Dbxref=Genbank:NP_214591.1,GeneID:886969;gbkey=CDS;product=oxidoreductase;protein_id=NP_214591.1;transl_table=11
+NC_000962.2	RefSeq	gene	86528	87133	.	+	.	ID=gene80;Name=Rv0078;Dbxref=GeneID:886990;gbkey=Gene;locus_tag=Rv0078
+NC_000962.2	RefSeq	CDS	86528	87133	.	+	0	ID=cds77;Name=NP_214592.1;Parent=gene80;Dbxref=Genbank:NP_214592.1,GeneID:886990;gbkey=CDS;product=transcriptional regulator;protein_id=NP_214592.1;transl_table=11
+NC_000962.2	RefSeq	gene	87208	87801	.	-	.	ID=gene81;Name=Rv0078A;Dbxref=GeneID:3205053;gbkey=Gene;locus_tag=Rv0078A
+NC_000962.2	RefSeq	CDS	87208	87801	.	-	0	ID=cds78;Name=YP_177616.1;Parent=gene81;Dbxref=Genbank:YP_177616.1,GeneID:3205053;gbkey=CDS;product=hypothetical protein;protein_id=YP_177616.1;transl_table=11
+NC_000962.2	RefSeq	gene	88204	89025	.	+	.	ID=gene82;Name=Rv0079;Dbxref=GeneID:886995;gbkey=Gene;locus_tag=Rv0079
+NC_000962.2	RefSeq	CDS	88204	89025	.	+	0	ID=cds79;Name=NP_214593.1;Parent=gene82;Dbxref=Genbank:NP_214593.1,GeneID:886995;gbkey=CDS;product=hypothetical protein;protein_id=NP_214593.1;transl_table=11
+NC_000962.2	RefSeq	gene	89022	89480	.	+	.	ID=gene83;Name=Rv0080;Dbxref=GeneID:886966;gbkey=Gene;locus_tag=Rv0080
+NC_000962.2	RefSeq	CDS	89022	89480	.	+	0	ID=cds80;Name=NP_214594.1;Parent=gene83;Dbxref=Genbank:NP_214594.1,GeneID:886966;gbkey=CDS;product=hypothetical protein;protein_id=NP_214594.1;transl_table=11
+NC_000962.2	RefSeq	gene	89575	89919	.	+	.	ID=gene84;Name=Rv0081;Dbxref=GeneID:887012;gbkey=Gene;locus_tag=Rv0081
+NC_000962.2	RefSeq	CDS	89575	89919	.	+	0	ID=cds81;Name=NP_214595.1;Parent=gene84;Dbxref=Genbank:NP_214595.1,GeneID:887012;gbkey=CDS;product=transcriptional regulator;protein_id=NP_214595.1;transl_table=11
+NC_000962.2	RefSeq	gene	89924	90403	.	+	.	ID=gene85;Name=Rv0082;Dbxref=GeneID:886968;gbkey=Gene;locus_tag=Rv0082
+NC_000962.2	RefSeq	CDS	89924	90403	.	+	0	ID=cds82;Name=NP_214596.1;Parent=gene85;Dbxref=Genbank:NP_214596.1,GeneID:886968;gbkey=CDS;product=oxidoreductase;protein_id=NP_214596.1;transl_table=11
+NC_000962.2	RefSeq	gene	90400	92322	.	+	.	ID=gene86;Name=Rv0083;Dbxref=GeneID:886965;gbkey=Gene;locus_tag=Rv0083
+NC_000962.2	RefSeq	CDS	90400	92322	.	+	0	ID=cds83;Name=NP_214597.1;Parent=gene86;Dbxref=Genbank:NP_214597.1,GeneID:886965;gbkey=CDS;product=oxidoreductase;protein_id=NP_214597.1;transl_table=11
+NC_000962.2	RefSeq	gene	92328	93278	.	+	.	ID=gene87;Name=hycD;Dbxref=GeneID:886959;gbkey=Gene;gene=hycD;locus_tag=Rv0084
+NC_000962.2	RefSeq	CDS	92328	93278	.	+	0	ID=cds84;Name=NP_214598.1;Parent=gene87;Dbxref=Genbank:NP_214598.1,GeneID:886959;gbkey=CDS;product=formate hydrogenlyase HYCD;protein_id=NP_214598.1;transl_table=11
+NC_000962.2	RefSeq	gene	93289	93951	.	+	.	ID=gene88;Name=hycP;Dbxref=GeneID:886973;gbkey=Gene;gene=hycP;locus_tag=Rv0085
+NC_000962.2	RefSeq	CDS	93289	93951	.	+	0	ID=cds85;Name=NP_214599.1;Parent=gene88;Dbxref=Genbank:NP_214599.1,GeneID:886973;gbkey=CDS;product=hydrogenase HycP;protein_id=NP_214599.1;transl_table=11
+NC_000962.2	RefSeq	gene	93951	95417	.	+	.	ID=gene89;Name=hycQ;Dbxref=GeneID:886963;gbkey=Gene;gene=hycQ;locus_tag=Rv0086
+NC_000962.2	RefSeq	CDS	93951	95417	.	+	0	ID=cds86;Name=NP_214600.1;Parent=gene89;Dbxref=Genbank:NP_214600.1,GeneID:886963;gbkey=CDS;product=hydrogenase HycQ;protein_id=NP_214600.1;transl_table=11
+NC_000962.2	RefSeq	gene	95414	96892	.	+	.	ID=gene90;Name=hycE;Dbxref=GeneID:886956;gbkey=Gene;gene=hycE;locus_tag=Rv0087
+NC_000962.2	RefSeq	CDS	95414	96892	.	+	0	ID=cds87;Name=NP_214601.1;Parent=gene90;Dbxref=Genbank:NP_214601.1,GeneID:886956;gbkey=CDS;product=formate hydrogenase HycE;protein_id=NP_214601.1;transl_table=11
+NC_000962.2	RefSeq	gene	96927	97601	.	+	.	ID=gene91;Name=Rv0088;Dbxref=GeneID:886954;gbkey=Gene;locus_tag=Rv0088
+NC_000962.2	RefSeq	CDS	96927	97601	.	+	0	ID=cds88;Name=NP_214602.1;Parent=gene91;Dbxref=Genbank:NP_214602.1,GeneID:886954;gbkey=CDS;product=hypothetical protein;protein_id=NP_214602.1;transl_table=11
+NC_000962.2	RefSeq	gene	97758	98351	.	+	.	ID=gene92;Name=Rv0089;Dbxref=GeneID:886949;gbkey=Gene;locus_tag=Rv0089
+NC_000962.2	RefSeq	CDS	97758	98351	.	+	0	ID=cds89;Name=NP_214603.1;Parent=gene92;Dbxref=Genbank:NP_214603.1,GeneID:886949;gbkey=CDS;product=methyltransferase%2Fmethylase;protein_id=NP_214603.1;transl_table=11
+NC_000962.2	RefSeq	gene	98480	99250	.	+	.	ID=gene93;Name=Rv0090;Dbxref=GeneID:886961;gbkey=Gene;locus_tag=Rv0090
+NC_000962.2	RefSeq	CDS	98480	99250	.	+	0	ID=cds90;Name=NP_214604.1;Parent=gene93;Dbxref=Genbank:NP_214604.1,GeneID:886961;gbkey=CDS;product=hypothetical protein;protein_id=NP_214604.1;transl_table=11
+NC_000962.2	RefSeq	gene	99684	100451	.	+	.	ID=gene94;Name=mtn;Dbxref=GeneID:886953;gbkey=Gene;gene=mtn;locus_tag=Rv0091
+NC_000962.2	RefSeq	CDS	99684	100451	.	+	0	ID=cds91;Name=NP_214605.1;Parent=gene94;Dbxref=Genbank:NP_214605.1,GeneID:886953;gbkey=CDS;product=bifunctional 5%27-methylthioadenosine nucleosidase%2FS-adenosylhomocysteine nucleosidase;protein_id=NP_214605.1;transl_table=11
+NC_000962.2	RefSeq	gene	100583	102868	.	+	.	ID=gene95;Name=ctpA;Dbxref=GeneID:886946;gbkey=Gene;gene=ctpA;locus_tag=Rv0092
+NC_000962.2	RefSeq	CDS	100583	102868	.	+	0	ID=cds92;Name=NP_214606.1;Parent=gene95;Dbxref=Genbank:NP_214606.1,GeneID:886946;gbkey=CDS;product=cation transporter P-type ATPase A;protein_id=NP_214606.1;transl_table=11
+NC_000962.2	RefSeq	region	100640	100726	.	+	.	ID=id29;Note=PS01047 Heavy-metal-associated domain;Dbxref=GeneID:886946;gbkey=misc_feature
+NC_000962.2	RefSeq	region	101909	101929	.	+	.	ID=id30;Note=PS00154 E1-E2 ATPases phosphorylation site;Dbxref=GeneID:886946;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	102815	103663	.	-	.	ID=gene96;Name=Rv0093c;Dbxref=GeneID:886945;gbkey=Gene;locus_tag=Rv0093c
+NC_000962.2	RefSeq	CDS	102815	103663	.	-	0	ID=cds93;Name=NP_214607.1;Parent=gene96;Dbxref=Genbank:NP_214607.1,GeneID:886945;gbkey=CDS;product=hypothetical protein;protein_id=NP_214607.1;transl_table=11
+NC_000962.2	RefSeq	gene	103710	104663	.	-	.	ID=gene97;Name=Rv0094c;Dbxref=GeneID:886943;gbkey=Gene;locus_tag=Rv0094c
+NC_000962.2	RefSeq	CDS	103710	104663	.	-	0	ID=cds94;Name=NP_214608.1;Parent=gene97;Dbxref=Genbank:NP_214608.1,GeneID:886943;gbkey=CDS;product=hypothetical protein;protein_id=NP_214608.1;transl_table=11
+NC_000962.2	RefSeq	repeat_region	103713	105215	.	-	.	ID=id31;Note=REP-2%2C len: 1503 bp. REP251%2C member of REP13E12 family.%3B REP-2;gbkey=repeat_region
+NC_000962.2	RefSeq	gene	104805	105215	.	-	.	ID=gene98;Name=Rv0095c;Dbxref=GeneID:886940;gbkey=Gene;locus_tag=Rv0095c
+NC_000962.2	RefSeq	CDS	104805	105215	.	-	0	ID=cds95;Name=NP_214609.1;Parent=gene98;Dbxref=Genbank:NP_214609.1,GeneID:886940;gbkey=CDS;product=hypothetical protein;protein_id=NP_214609.1;transl_table=11
+NC_000962.2	RefSeq	gene	105324	106715	.	+	.	ID=gene99;Name=PPE1;Dbxref=GeneID:886938;gbkey=Gene;gene=PPE1;locus_tag=Rv0096
+NC_000962.2	RefSeq	CDS	105324	106715	.	+	0	ID=cds96;Name=YP_177690.1;Parent=gene99;Dbxref=Genbank:YP_177690.1,GeneID:886938;gbkey=CDS;product=PPE family protein;protein_id=YP_177690.1;transl_table=11
+NC_000962.2	RefSeq	gene	106734	107603	.	+	.	ID=gene100;Name=Rv0097;Dbxref=GeneID:886942;gbkey=Gene;locus_tag=Rv0097
+NC_000962.2	RefSeq	CDS	106734	107603	.	+	0	ID=cds97;Name=NP_214611.1;Parent=gene100;Dbxref=Genbank:NP_214611.1,GeneID:886942;gbkey=CDS;product=oxidoreductase;protein_id=NP_214611.1;transl_table=11
+NC_000962.2	RefSeq	region	107474	107488	.	+	.	ID=id32;Note=PS00077 Cytochrome c oxidase subunit I%2C copper B binding region signature;Dbxref=GeneID:886942;gbkey=misc_feature
+NC_000962.2	RefSeq	gene	107600	108151	.	+	.	ID=gene101;Name=Rv0098;Dbxref=GeneID:886935;gbkey=Gene;locus_tag=Rv0098
+NC_000962.2	RefSeq	CDS	107600	108151	.	+	0	ID=cds98;Name=NP_214612.1;Parent=gene101;Dbxref=Genbank:NP_214612.1,GeneID:886935;gbkey=CDS;product=hypothetical protein;protein_id=NP_214612.1;transl_table=11
+NC_000962.2	RefSeq	gene	108156	109778	.	+	.	ID=gene102;Name=fadD10;Dbxref=GeneID:886933;gbkey=Gene;gene=fadD10;locus_tag=Rv0099
+NC_000962.2	RefSeq	CDS	108156	109778	.	+	0	ID=cds99;Name=NP_214613.1;Parent=gene102;Dbxref=Genbank:NP_214613.1,GeneID:886933;gbkey=CDS;product=acyl-CoA synthetase;protein_id=NP_214613.1;transl_table=11
+NC_000962.2	RefSeq	region	108675	108710	.	+	.	ID=id33;Note=PS00455  AMP-binding domain signature;Dbxref=GeneID:886933;gbkey=misc_feature

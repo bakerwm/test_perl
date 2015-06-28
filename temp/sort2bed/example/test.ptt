@@ -1,0 +1,103 @@
+Mycobacterium tuberculosis H37Rv chromosome, complete genome - 1..4411532
+4003 proteins
+Location	Strand	Length	PID	Gene	Synonym	Code	COG	Product
+1..1524	+	507	15607143	dnaA	Rv0001	-	COG0593L	chromosome replication initiator DnaA
+2052..3260	+	402	15607144	dnaN	Rv0002	-	COG0592L	DNA polymerase III subunit beta
+3280..4437	+	385	15607145	recF	Rv0003	-	COG1195L	recombination protein F
+4434..4997	+	187	15607146	-	Rv0004	-	COG5512R	hypothetical protein
+5123..7267	+	714	15607147	gyrB	Rv0005	-	COG0187L	DNA gyrase subunit B
+7302..9818	+	838	15607148	gyrA	Rv0006	-	COG0188L	DNA gyrase subunit A
+9914..10828	+	304	15607149	-	Rv0007	-	-	hypothetical protein
+11874..12311	-	145	15607150	-	Rv0008c	-	-	hypothetical protein
+12468..13016	+	182	15607151	ppiA	Rv0009	-	COG0652O	iron-regulated peptidyl-prolyl cis-trans isomerase A
+13133..13558	-	141	15607152	-	Rv0010c	-	COG1640G	hypothetical protein
+13714..13995	-	93	15607153	-	Rv0011c	-	-	septation inhibitor protein
+14089..14877	+	262	15607154	-	Rv0012	-	COG3879S	hypothetical protein
+14914..15612	+	232	57116682	trpG	Rv0013	-	COG0512EH	para-aminobenzoate synthase component II
+15590..17470	-	626	15607156	pknB	Rv0014c	-	COG2815S	Ser/Thr protein kinase B
+17467..18762	-	431	15607157	pknA	Rv0015c	-	COG0515RTKL	Ser/Thr protein kinase A
+18759..20234	-	491	15607158	pbpA	Rv0016c	-	COG0768M	penicillin-binding protein PbpA
+20231..21640	-	469	15607159	rodA	Rv0017c	-	COG0772D	cell division protein RodA
+21637..23181	-	514	15607160	ppp	Rv0018c	-	COG0631T	serine/threonine phosphatase
+23270..23737	-	155	15607161	-	Rv0019c	-	COG1716T	hypothetical protein
+23861..25444	-	527	15607162	TB39.8	Rv0020c	-	COG1716T	hypothetical protein
+25913..26881	-	322	15607163	-	Rv0021c	-	COG2070R	hypothetical protein
+27023..27442	-	139	15607164	whiB5	Rv0022c	-	-	transcriptional regulatory protein WHIB-like WHIB5
+27595..28365	+	256	15607165	-	Rv0023	-	COG1396K	transcriptional regulator
+28362..29207	+	281	15607166	-	Rv0024	-	COG0791M	protein P60-related protein
+29245..29607	+	120	15607167	-	Rv0025	-	-	hypothetical protein
+29722..31068	+	448	15607168	-	Rv0026	-	-	hypothetical protein
+31189..31506	+	105	15607169	-	Rv0027	-	-	hypothetical protein
+31514..31819	+	101	15607170	-	Rv0028	-	-	hypothetical protein
+32057..33154	+	365	15607171	-	Rv0029	-	-	hypothetical protein
+33224..33553	+	109	15607172	-	Rv0030	-	-	hypothetical protein
+33582..33794	+	70	15607173	-	Rv0031	-	-	remnant of A transposase
+34295..36610	+	771	15607174	bioF2	Rv0032	-	COG0156H	8-amino-7-oxononanoate synthase
+36607..36870	+	87	15607175	acpA	Rv0033	-	COG0236IQ	acyl carrier protein
+36867..37262	+	131	15607176	-	Rv0034	-	COG3631R	hypothetical protein
+37259..38947	+	562	57116683	fadD34	Rv0035	-	COG0318IQ	fatty-acid--CoA ligase
+39056..39829	-	257	15607178	-	Rv0036c	-	-	hypothetical protein
+39877..41202	-	441	15607179	-	Rv0037c	-	-	hypothetical protein
+41304..41912	+	202	15607180	-	Rv0038	-	COG1678K	hypothetical protein
+42004..42351	-	115	15607181	-	Rv0039c	-	-	transmembrane protein
+42433..43365	-	310	57116684	mtc28	Rv0040c	-	-	hypothetical protein
+43562..46471	+	969	15607183	leuS	Rv0041	-	COG0495J	leucyl-tRNA synthetase
+46581..47207	-	208	15607184	-	Rv0042c	-	COG1846K	MarR family transcriptional regulator
+47366..48100	-	244	15607185	-	Rv0043c	-	COG1802K	GntR family transcriptional regulator
+48233..49027	-	264	15607186	-	Rv0044c	-	COG2141C	oxidoreductase
+49043..49939	-	298	15607187	-	Rv0045c	-	COG0596R	hydrolase
+50021..51124	-	367	15607188	ino1	Rv0046c	-	COG1260I	myo-inositol-1-phosphate synthase
+51185..51727	-	180	15607189	-	Rv0047c	-	COG1695K	hypothetical protein
+51828..52697	-	289	15607190	-	Rv0048c	-	-	hypothetical protein
+52831..53244	+	137	15607191	-	Rv0049	-	-	hypothetical protein
+53663..55699	+	678	57116685	ponA1	Rv0050	-	COG0744M	bifunctional penicillin-binding protein 1A/1B
+55696..57378	+	560	15607193	-	Rv0051	-	COG5650S	transmembrane protein
+57398..57973	+	191	345461991	-	Rv0052	-	COG4977K	hypothetical protein
+58192..58482	+	96	15607195	rpsF	Rv0053	-	COG0360J	30S ribosomal protein S6
+58586..59080	+	164	15607196	ssb	Rv0054	-	COG0629L	single-stranded DNA-binding protein
+59122..59376	+	84	57116686	rpsR	Rv0055	-	COG0238J	30S ribosomal protein S18
+59409..59867	+	152	15607198	rplI	Rv0056	-	COG0359J	50S ribosomal protein L9
+59896..60417	+	173	15607199	-	Rv0057	-	-	hypothetical protein
+60396..63020	+	874	15607200	dnaB	Rv0058	-	COG0305L	replicative DNA helicase
+63200..63892	+	230	15607201	-	Rv0059	-	-	hypothetical protein
+63909..64967	+	352	15607202	-	Rv0060	-	COG2110R	hypothetical protein
+64991..65416	+	141	15607203	-	Rv0061	-	-	hypothetical protein
+65552..66694	+	380	57116687	celA1	Rv0062	-	COG5297G	endo-1,4-beta-glucanase
+66923..68362	+	479	15607205	-	Rv0063	-	COG0277C	oxidoreductase
+68620..71559	+	979	15607206	-	Rv0064	-	COG1615S	hypothetical protein
+71821..72222	+	133	15607207	-	Rv0065	-	COG4113R	hypothetical protein
+72274..74511	-	745	15607208	icd2	Rv0066c	-	COG2838C	isocitrate dehydrogenase
+74629..75198	-	189	15607209	-	Rv0067c	-	COG1309K	TetR family transcriptional regulator
+75301..76212	+	303	15607210	-	Rv0068	-	COG1028IQR	short-chain dehydrogenase
+76237..77622	-	461	15607211	sdaA	Rv0069c	-	COG1760E	L-serine dehydratase SdaA
+77619..78896	-	425	15607212	glyA	Rv0070c	-	COG0112E	serine hydroxymethyltransferase
+79486..80193	+	235	15607213	-	Rv0071	-	COG3344L	maturase
+80624..81673	+	349	15607214	-	Rv0072	-	COG4591M	glutamine-transport transmembrane protein ABC transporter
+81676..82668	+	330	15607215	-	Rv0073	-	COG1136V	glutamine ABC transporter ATP-binding protein
+82748..83983	+	411	15607216	-	Rv0074	-	COG1228Q	hypothetical protein
+83996..85168	+	390	15607217	-	Rv0075	-	COG1168E	aminotransferase
+85183..85572	-	129	15607218	-	Rv0076c	-	-	hypothetical protein
+85636..86466	-	276	15607219	-	Rv0077c	-	COG0596R	oxidoreductase
+86528..87133	+	201	15607220	-	Rv0078	-	COG1309K	transcriptional regulator
+87208..87801	-	197	57116688	-	Rv0078A	-	-	hypothetical protein
+88204..89025	+	273	15607221	-	Rv0079	-	-	hypothetical protein
+89022..89480	+	152	15607222	-	Rv0080	-	COG3467R	hypothetical protein
+89575..89919	+	114	15607223	-	Rv0081	-	COG0640K	transcriptional regulator
+89924..90403	+	159	15607224	-	Rv0082	-	COG3260C	oxidoreductase
+90400..92322	+	640	15607225	-	Rv0083	-	COG0651CP	oxidoreductase
+92328..93278	+	316	15607226	hycD	Rv0084	-	COG0650C	formate hydrogenlyase HYCD
+93289..93951	+	220	15607227	hycP	Rv0085	-	COG4237C	hydrogenase HycP
+93951..95417	+	488	15607228	hycQ	Rv0086	-	COG0651CP	hydrogenase HycQ
+95414..96892	+	492	15607229	hycE	Rv0087	-	COG3261C	formate hydrogenase HycE
+96927..97601	+	224	15607230	-	Rv0088	-	COG2867I	hypothetical protein
+97758..98351	+	197	15607231	-	Rv0089	-	COG2226H	methyltransferase/methylase
+98480..99250	+	256	15607232	-	Rv0090	-	COG3305S	hypothetical protein
+99684..100451	+	255	15607233	mtn	Rv0091	-	COG0775F	bifunctional 5'-methylthioadenosine nucleosidase/S-adenosylhomocysteine nucleosidase
+100583..102868	+	761	15607234	ctpA	Rv0092	-	COG2217P	cation transporter P-type ATPase A
+102815..103663	-	282	15607235	-	Rv0093c	-	COG5660S	hypothetical protein
+103710..104663	-	317	15607236	-	Rv0094c	-	-	hypothetical protein
+104805..105215	-	136	15607237	-	Rv0095c	-	-	hypothetical protein
+105324..106715	+	463	57116689	PPE1	Rv0096	-	COG5651N	PPE family protein
+106734..107603	+	289	15607239	-	Rv0097	-	COG2175Q	oxidoreductase
+107600..108151	+	183	15607240	-	Rv0098	-	-	hypothetical protein
+108156..109778	+	540	15607241	fadD10	Rv0099	-	COG0318IQ	acyl-CoA synthetase
