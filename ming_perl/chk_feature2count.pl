@@ -112,7 +112,7 @@ sub htseq_count {
     my $in_tmp2   = catfile($outdir, basename($in).'.tmp2');
     my $in_TPM    = catfile($outdir, basename($in).'.TPM.'.$num);
     if( not_blank_file($in) ) {
-        push @runs, "$func{'sort2bed.pl'} -t sort2gff -f exon -s $chr -i $in -o $in_gff";
+        push @runs, "perl $func{'sort2bed.pl'} -t sort2gff -f exon -s $chr -i $in -o $in_gff";
         push @runs, "$func{'htseq-count'} -q -f bam -s $lib_type -t exon $bam $in_gff > $in_tmp";
         push @runs, "sort -k1 $in_tmp | sed -e \'/^\_/d\' > $in_tmp2";
         # count tpm
@@ -145,7 +145,7 @@ sub featureCounts_count {
     my $in_tmp2   = catfile($outdir, basename($in).'.tmp2');
     my $in_TPM    = catfile($outdir, basename($in).'.TPM.'.$num);
     if( not_blank_file($in) ) {
-        push @runs, "$func{'sort2bed.pl'} -t sort2gff -f exon -s $chr -i $in -o $in_gff";
+        push @runs, "perl $func{'sort2bed.pl'} -t sort2gff -f exon -s $chr -i $in -o $in_gff";
         push @runs, "$func{'featureCounts'} -p -T 5 -s $lib_type -M -O --donotsort -t exon -g gene_id -a $in_gff -o $in_tmp $bam >>$in\.log 2>&1"; # need: -O 
 # keep summary
         push @runs, "mv $in_tmp\.summary $in_tmp\.summary\.$num";
@@ -179,7 +179,8 @@ sub bedtools_count {
     my $in_tmp = catfile($outdir, basename($in).'.tmp');
     my $in_TPM = catfile($outdir, basename($in).'.TPM.'.$num);
     if( not_blank_file($in) ) {
-        push @runs, "$func{'sort2bed.pl'} -t sort2bed -s $chr -i $in -o $in_bed";
+        push @runs, "perl $func{'sort2bed.pl'} -t sort2bed -s $chr -i $in -o $in_bed";
+
 #        push @runs, "$func{'bedtools'} intersect -c $str_type -a $in_bed -b $bam  > $in_tmp";
         push @runs, "$func{'bedtools'} multicov -split -D $str_type -bams $bam -bed $in_bed > $in_tmp";
         # count tpm
