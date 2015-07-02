@@ -748,5 +748,7 @@ Command: stat   count mapping reads for each BAM
 # 2015-06-15
 # v0.5
 #    1. replace HTSeq-count by FeatureCounts to count reads on each sRNAs. (much faster)
+#    2. change para for featureCounts: -M --fraction count reads 1/n 
+# 
 #
 # Author: Wang Ming, wangmcas@gmail.com

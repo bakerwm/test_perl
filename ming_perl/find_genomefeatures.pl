@@ -22,6 +22,7 @@ my $chrom;
 
 parse_para();
 find_features();
+exit(1);
 
 sub parse_para{
     my %opts = ();
@@ -71,7 +72,7 @@ sub find_features{
         $end--;
         print $fh_mRNA join("\t", ($chrom, $start, $end, $name, $length, $strand)), "\n";
         my $as_str = ($strand eq '+')?'-':'+';
-        print $fh_as join("\t", ($chrom, $start, $end, $name, $length, $as_str)), "\n";
+        print $fh_as join("\t", ($chrom, $start, $end, "AS_".$name, $length, $as_str)), "\n";
     }
     close $fh_mRNA;
     close $fh_as;
@@ -115,19 +116,6 @@ sub find_features{
     }
     close $fh_tRNA;
     close $fh_rRNA;
-}
-
-sub usage {
-    die("
-Usage: find_genomefeatures.pl [options] <outdir>
-
-Options: -a : <STR>     : fasta file of NCBI bacteria genome
-                          need GFF, PTT, RNT files in the same dir
-         -n : <STR>     : name of Chr for ouput
-
-Example: 
-find_genomefeatures.pl -a ~/NCBI/NC_000962.fna -n NC_000962.3 out
-\n");
 }
 
 sub read_fa{
@@ -225,5 +213,20 @@ sub read_rnt{
     close $fh_rnt;
     die("found no lines in PTT file") if($count == 0);
     return %out;
+}
+
+sub usage {
+    die("
+Usage: find_genomefeatures.pl [options] <outdir>
+
+Options: -a : <STR>     : fasta file of NCBI bacteria genome
+                          need GFF, PTT, RNT files in the same dir
+         -n : <STR>     : name of Chr for ouput
+Note: 
+1. only output IGRs > 20 nt
+
+Example: 
+find_genomefeatures.pl -a ~/NCBI/NC_000962.fna -n NC_000962.3 out
+\n");
 }
 
