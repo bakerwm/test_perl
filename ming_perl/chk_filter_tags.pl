@@ -16,19 +16,19 @@ Usage: filt_tags.pl [options] infile.txt
 
 Options: -e   : The column of TPM value
          -z   : The column of RNAz value
+         -l   : The length of ouput sRNAs [20]
          -c   : The cutoff of TPM value for each seq [10]
 
 Example: 
 1. Filter the file by TPM > 10:
 
-filt_tags.pl -e 14 -z 21 -c 10 Lib01.report.txt
+filt_tags.pl -e 14 -z 21 -c 10 -l 20 Lib01.report.txt
 \n/);
 }
 
-
 usage() if(@ARGV == 0);
-my %opts = (e => 14, z => 21, c => 10);
-getopts("e:z:c:", \%opts);
+my %opts = (e => 14, z => 21, c => 10, l => 20);
+getopts("e:z:l:c:", \%opts);
 
 my $infile = shift(@ARGV);
 my $notinclude = $infile . '.del';
@@ -45,13 +45,17 @@ while(<$fh_in>) {
     my @infs = split(/\s+/, $line, 13);
     pop(@infs);
     next if(/(^\s*$)|(^\#)/);
-    if($ps[$z] eq '-' ) {
-        if($ps[$e] > $opts{c}) {
+    if($ps[2] < $opts{l}) {
+        print $fh_del $_ . "\n";
+        next;
+    }
+    if($ps[$z] eq '-' ) { 
+        if($ps[$e] > $opts{c}) { # TPM
             print join("\t", @infs, $ps[$count_col], $ps[$e], $ps[$z]) . "\n";
         }else {
             print $fh_del $_ . "\n";
         }
-    }else {
+    }else { # have RNAz score
         print join("\t", @infs, $ps[$count_col], $ps[$e], $ps[$z]) . "\n";
     }
 }

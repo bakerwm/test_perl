@@ -147,9 +147,9 @@ sub featureCounts_count {
 
     my $fc_para   = '';
     if($bam_name =~ /\_[1-9]+$/) {  # PE reads
-        $fc_para  = join(" ", '-M --fraction --donotsort -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
+        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
     }else {
-        $fc_para  = join(" ", '-M --fraction --donotsort -f -T 5 -g gene_id -t exon -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);    
+        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);    
     }
 
     if( not_blank_file($in) ) {

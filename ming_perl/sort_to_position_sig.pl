@@ -16,8 +16,8 @@ use Data::Dumper;
 #   replace [\w+] by [.*].                                           #
 ######################################################################
 
-my %opts = ();
-getopt("f:g:", \%opts);
+my %opts = (t => "gene");
+getopts("f:t:g:", \%opts);
 die "Usage: perl $0 [-g] <genome.gff> [-f] <ref.fa> input.txt > out.txt" if (@ARGV != 1);
 
 my $in_gff = $opts{g};
@@ -48,7 +48,8 @@ foreach (@lines){
     next if(/^\#/);
     my($g_begin,$g_end,$g_strand)=(split/\t/)[3,4,6];
     my $g_name;
-    if(/\tgene\t/){
+    if(/\t$opts{t}\t/) {
+#    if(/\tgene\t/){
         if(($g_name) = $_ =~ /locus_tag=(\w+)/){
         }elsif(($g_name) = $_ =~ /Name=(\w+)/){
         }elsif(($g_name) = $_ =~ /ID=gene\:(\w+)/){
@@ -76,7 +77,7 @@ foreach (@lines){
 
 # Delete known ncRNAs
 foreach my $e (keys %ex_list) {
-    delete $gff{$e};
+#    delete $gff{$e};
 }
 
 # Sort genes according to BEGIN position.

@@ -158,7 +158,7 @@ Options: -o <STR>   : Output file, [STDOUT]
 
 Examples:
 1. using sort files as input
-sort2circos.pl link -i input.txt -a 1 -b 2 fileA.txt,1,4:5 fileB.txt,1,4:5
+sort2circos.pl link -i input.txt -a 1 -b 2 fileA.txt,1,4,5 fileB.txt,1,4,5
 \n") if(@ARGV != 2);
 
     my ($t1, $t2) = @ARGV;
