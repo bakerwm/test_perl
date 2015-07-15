@@ -12,6 +12,8 @@
 #   - rnazCluster.pl, rnazIndex.pl, rnazBEDsort.pl 
 #     default parameters
 # 4. wrap all output to "best_RNAz.bed"
+#
+# Wang Ming wangmcas(at)gmail.com
 #################################################
 
 use strict;
@@ -254,7 +256,8 @@ sub run_clustalw2 {
     if( check_fasta($in_fa, 1) ) {
         system"mv -f $in_fa\.tmp $in_fa";
         my $clustal_log = $in_fa . '.clu.log'; #catfile(dirname($in_fa), $in_fa . 'clu.log');
-        system "$func{'clustalw2'} $in_fa > $clustal_log 2>&1 ";
+        system "$func{'clustalw2'} -INFILE=$in_fa > $clustal_log 2>&1 ";
+print "$func{'clustalw2'} -INFILE=$in_fa > $clustal_log 2>&1 " . "\n";
         return 1;
     }else {
         return 0;
@@ -424,3 +427,6 @@ Command: RNAz       Perform RNAz analysis for the input seqeuence
 # 6. wrap the RNAz output (bed), skip blank lines.
 # 7. for input seq that contain multiple regions with RNAz score > 0.5, it will 
 #    show only the largest RNAz score. 
+#
+# 2015-07-09
+#    1. add "-INFILE=in.fa" to clustalw2 program. (not recognize the input type)

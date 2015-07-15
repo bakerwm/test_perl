@@ -19,12 +19,13 @@ exit (1);
 
 #
 sub blast_rbh { # using blast+ for Reciprocal Best Hits analysis
-    my %opts = (t => 'dna');
-    getopts("o:i:d:t:h", \%opts);
+    my %opts = (t => 'dna', s => 1);
+    getopts("o:i:d:t:s:h", \%opts);
     usage() if(defined $opts{h});
     die("[-o] Need specify the output dir\n") if(!defined($opts{o}));
     die("[-i, -d] Need input two fasta files\n") if(!defined $opts{i} || !defined($opts{d}));
     die("[-t $opts{t}] type not recognized, (dna or pro?)\n") if(! $opts{t} =~ m/^(dna)$|^(pro)$/i);
+    die("[-s, $opts{s}] unknown option:0-2\n") if($opts{s} > 2 || $opts{s} < 0);
     make_path($opts{o}) if(! -d $opts{o});
     # guess input dna/pro, and parameter
     my $format_in = guess_fasta($opts{i});
@@ -42,7 +43,6 @@ sub blast_rbh { # using blast+ for Reciprocal Best Hits analysis
     my $rand_num = sprintf "%06d", int(rand(1000000));
     my $temp_dir = 'temp_' . $$ . '_' .  $rand_num;
     make_path($temp_dir);
-    
     # cp i/d files
     my $tmp_i = catfile($temp_dir, basename($opts{i}));
     my $tmp_d = catfile($temp_dir, basename($opts{d}));
@@ -50,8 +50,8 @@ sub blast_rbh { # using blast+ for Reciprocal Best Hits analysis
     system "cp -f $opts{d} $tmp_d";
     my $blast_ab = runBlast($tmp_i, $tmp_d, $opts{t}, $opts{o});
     my $blast_ba = runBlast($tmp_d, $tmp_i, $opts{t}, $opts{o});
-    my $best_ab  = findBesthit($blast_ab);
-    my $best_ba  = findBesthit($blast_ba);
+    my $best_ab  = findBesthit($blast_ab, $opts{s});
+    my $best_ba  = findBesthit($blast_ba, $opts{s});
     my ($best_pair, $homo_list) = bestReciprocal($best_ab, $best_ba);
     open my $fh_both, "> $best_outfile" or die "Cannot open $best_outfile, $!\n";
     open my $fh_homo, "> $homo_file" or die "Cannot open $homo_file, #!";
@@ -129,7 +129,8 @@ sub processBlast { # input blast+, -m7 output
 }
 
 sub findBesthit {
-    my $in = shift(@_);
+    my $in = $_[0];
+    my $strand = $_[1];
     my @hits = split(/\#/, $in);
     shift(@hits);
     my %bt = ();
@@ -141,9 +142,16 @@ sub findBesthit {
         for my $p (@hsp) {
             last if($rank < -3); ### only read 4 levels
             next if (! defined $p);
-            my ($qid, $sid, $identity, $mismatch) = (split /\s+/, $p)[0, 1, 2, 4];
+            my ($qid, $sid, $identity, $mismatch, $q_s, $q_e, $s_s, $s_e) = (split /\s+/, $p)[0, 1, 2, 4, 6,7,8,9];
             next if($identity < 70 ); # discard low identity hits
 #            next if($mismatch > 30); # number of mismatches
+            if($strand == 1) {
+                next if(($q_s - $q_e) * ($s_s - $s_e) < 0); # same strandness
+            }elsif($strand == 2) {
+                next if(($q_s - $q_e) * ($s_s - $s_e) > 0); # different strandness
+            }else{
+                # both strandness
+            }
             next if(exists $bt{$qid}->{$sid}); # discard the following up duplicates
             $bt{$qid}->{$sid}->{'score'} = $rank;
             $bt{$qid}->{$sid}->{'info'}  = $p;
@@ -247,6 +255,7 @@ Options: -h     : show this info
          -i     : a fasta file 
          -d     : a FASTA file (as db file)
          -t     : type of input file: DNA=dna, protein=pro [default: dna]
+         -s     : Require strandness: 1=same, 2=different, 0=no [1]
 
 Examples:
 1. find reciprocol best hit pairs between two fasta file
@@ -261,3 +270,5 @@ blast_rbh.pl -o out -i a.fa -d b.fa -t dna
 # 3. evaluation: penalty by the ranking in each hit report. and variance.
 # 4. for bacteri *.ffn, '-parse_seqids' is not approprate ; (as the gi ids for *.ffn are identical)
 #
+# 2015-07-13
+#   1. add "-s" argument, same strandness, 0=no, 1=same, 2=different

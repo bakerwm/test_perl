@@ -28,6 +28,8 @@ sub update_table {
     my $ci    = 1;
     my $cj    = 2;
     my $output;
+    my $report_hit = 0;
+#    my $not_hit;
     my $report;
     my $change;
     my $add;
@@ -46,6 +48,8 @@ sub update_table {
             'i=i'          => \$ci,
             'j=i'          => \$cj,
             'o=s'          => \$output,
+            'hit|U=i'      => \$report_hit,
+#            'nothit|v'     => \$not_hit,
             'add|D'        => \$add,
             'line|L'       => \$rp_line,
             'replace|R'    => \$replace_tabs,
@@ -77,7 +81,8 @@ sub update_table {
         my %dn = ();
         for my $d (keys %df) {
            if(! exists $id_trans{$d}) {
-               die("[$d] from (-f) not found in (-x) \n");
+next;
+#               die("[$d] from (-f) not found in (-x) \n");
            }
            $dn{$id_trans{$d}} = $df{$d};
         }
@@ -85,17 +90,20 @@ sub update_table {
         %df = ();
         %df = %dn;
     }
+    # switch: which part will report: hits, not_hit, all
+    die("[-hit] unknown input, expected: 0, 1 or 2\n") if($report_hit < 0 || $report_hit > 2);
+    my $hit_switch = $report_hit; # 0=all, 1=only_hit, 2=not_hit
     # start conver files
     my $change_type;
     my @new = ();
     if($add) { # add info to last column
-        @new = add_tabs(\@inputs, $cm, \%df, $cA, $cB);
+        @new = add_tabs(\@inputs, $cm, \%df, $cA, $cB, $hit_switch);
         $change_type = "Type:\tAdd columns [$cA\-$cB] to last column $info";
     }elsif($rp_line) { # replace the entire line
-        @new = rp_line(\@inputs, $cm, \%df);
+        @new = rp_line(\@inputs, $cm, \%df, $hit_switch);
         $change_type = "Type:\tUpdate entire lines";
     }elsif($replace_tabs) { # replace spcific columns
-        @new = rp_tabs(\@inputs, $cm, \%df, $ca, $cb, $cA, $cB);
+        @new = rp_tabs(\@inputs, $cm, \%df, $ca, $cb, $cA, $cB, $hit_switch);
         $change_type = "Type:\tReplace column [$ca\-$cb] by columns [$cA\-$cB] of ($info)";
     }else{
         die("[-add|-line|-replace] need to be specified, see -h\n");
@@ -137,6 +145,7 @@ sub add_tabs {
     my %dd = %{$_[2]};
     my $tA = $_[3];
     my $tB = $_[4];
+    my $hit_switch = $_[5];
     # 
     my $add_width = $tB - $tA + 1;
     my @add_gaps  = split //, ('-'.$add_width);
@@ -152,11 +161,13 @@ sub add_tabs {
         my @ids  = extract_tabs($i, $tm, $tm);
         my $i_id = shift(@ids); 
         if(exists $dd{$i_id}) {
+            next if($hit_switch == 2);
             my @add_in = extract_tabs($dd{$i_id}, $tA, $tB);
             push @new_in, join("\t", $i, @add_in);
 # record the change log            
             $ch_log{$count} = "#$i\n" . join("\t", "Line-$count: Add-to-last-column:", @add_in);
         }else{
+            next if($hit_switch == 1);
             push @new_in, join("\t", $i, @add_gaps);
         }
         $count ++;
@@ -168,6 +179,8 @@ sub rp_line {
     my @in = @{$_[0]};
     my $tm = $_[1];
     my %dc = %{$_[2]};
+    my $hit_switch = $_[3];
+    #
     my @tmp_val  = values %dc;
     my @dc_width = split /\t/, shift(@tmp_val);
     my @new_in   = ();
@@ -181,13 +194,24 @@ sub rp_line {
         }
         my @tabs = split /\t/, $i;
         # replace by the same width
-        die("[-f, <IN>] have different fields (width)\n") if(@tabs != @dc_width);
+#        die("[-f, <IN>] -f is expected not shorter than <IN>\n") if(@tabs < @dc_width);
+#        die("[-f, <IN>] have different fields (width)\n") if(@tabs != @dc_width);
+
         my @ids  = extract_tabs($i, $tm, $tm);
         my $i_id = shift(@ids);
         if(exists $dc{$i_id}) {
-            push @new_in, $dc{$i_id}; ## WARN: may differ in format ##
-            $ch_log{$count} = "#i\nLine-$count: Update-line:\t$dc{$i_id}";
+            next if($hit_switch == 2);
+            if(@tabs > @dc_width) {
+                my $num  = @tabs - @dc_width;
+                my $flag = '-' x $num;
+                my @gaps = split //, $flag;
+                push @new_in, join("\t", $dc{$i_id}, @gaps); # add '-' to make sure the same length
+            }else {
+                push @new_in, $dc{$i_id}; ## WARN: may differ in format ##
+                $ch_log{$count} = "#i\nLine-$count: Update-line:\t$dc{$i_id}";
+            }
         }else {
+            next if($hit_switch == 1);
             push @new_in, $i;
         }
         $count ++
@@ -203,10 +227,11 @@ sub rp_tabs {
     my $tb = $_[4];
     my $tA = $_[5];
     my $tB = $_[6];
+    my $hit_switch = $_[7];
     # check in->out in the same length
     my $in_length = $tb - $ta + 1;
     my $rp_length = $tB - $tA + 1;
-    die("[-a -b, -A -B] ($ta $tb, $tA $tB) differ in length\n") if($in_length != $rp_length);
+#    die("[-a -b, -A -B] ($ta $tb, $tA $tB) differ in length\n") if($in_length != $rp_length);
     my @new_in = ();
     my %ch_log = ();
     my $count  = 1;
@@ -220,6 +245,7 @@ sub rp_tabs {
         my @ids  = extract_tabs($i, $tm, $tm);
         my $i_id = shift(@ids);
         if(exists $df{$i_id}) {
+            next if($hit_switch == 2);
             my $pre_s = 1;
             my $pre_e = $ta - 1;
             my $nxt_s = $tb + 1;
@@ -231,6 +257,8 @@ sub rp_tabs {
             push @new_in, join("\t", @pre, @rep, @nxt);
             $ch_log{$count} = join("\t", "#$i\nLine-$count: Replace ($ta:$tb)", @original, "by ($tA:$tB)", @rep);
         }else {
+            next if($hit_switch == 1);
+            next if($hit_switch);
             push @new_in, $i;
         }
         $count ++;
@@ -335,7 +363,7 @@ sub usage_simple {
     die("
 Usage: update_table.pl [-add|-line|-replace] [options] <STDIN|in.file>
 
-Options: [-f -n -a -b] [-m -A -B] [-x -i -j] [-report -change -o] 
+Options: [-hit|U] [-f -n -a -b] [-m -A -B] [-x -i -j] [-report -change -o] 
 
 1. Add tabs to the last column (col4-6 to last column)
 perl update_table.pl -add -f fileB -n 1 -a 4 -b 6 fileA
@@ -364,6 +392,7 @@ Replace options
 
 Options: <in.file>      : a file or STDIN (from pip)
          -h --help      : show this help
+         -U -hit        : which part will output: 0: all, 1: only hit, 2: not hit, [0]
          -f <STR>       : file contain information for substitution
          -m <INT>       : column to search id in input file [1]
          -n <INT>       : column to search id in [-i] file [1]
@@ -421,4 +450,4 @@ Change log:
         Also for the upcoming MTB db program (organize all the avaliable datasets;
         1. (Need to do) add a switch: only output the updated lines (equal extract lines from db)
         2. (Need to do) check the replaced (fields) have the same data structure.
-
+        3. delete the criteria: -AB, -ab have to be in the same width.
