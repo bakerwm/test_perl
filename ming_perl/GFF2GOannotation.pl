@@ -1,7 +1,14 @@
 #!/usr/bin/perl -w
+
+#################################################
+# Find GO annotation of input genes
+#
+# Wang Ming wangmcas(AT)gmail.com
+# 2015-01-23
+#################################################
+
 use strict;
 use warnings;
-
 use LWP::UserAgent;
 use POSIX qw(strftime);
 use File::Basename qw(dirname basename);
@@ -47,54 +54,34 @@ my $result_dir = catdir($working_dir, $out_dir);
 
 ###### PRE ########################
 my $dash_line = '-' x 40;
-
 my $dtime = &getTIME();
-
 print 'Retrieve GO annotation of gene by GFF file'. "\n". $dash_line . "\n";
-
 print $dtime. "\n\t". 'Step 1. Parsing GFF file: '. $in_gff. "\n";
 
 ### 1. Trans GFF to gene table#####
 my $gff_basename = basename($in_gff);
-
 $gff_basename =~ s/\.gff$/\.table/;
-
 my $geneTable_file = catfile($result_dir, $gff_basename);
-
 open GFF, ">", $geneTable_file or die $!;
-
 my $geneTable = &GFF2GeneTable($in_gff);
-
 print GFF $geneTable;
-
 close GFF;
 
 #### Checkpoint 1 ####
 my @check_1 = split ("\n", $geneTable);
-
 my $check_1_lines = scalar(@check_1) - 1; # exclude the header line
-
 $dtime = &getTIME();
-
 print $dtime. "\n\t". '- Find the number of genes: '. $check_1_lines. "\n";
-
 print "\t". '- Writing geneTable to file: '. $geneTable_file. "\n";
 
 ## 2. Trans geneID to UniProt id
 print "\t". 'Step 2. Retrieve UniProt id of gene by geneID/entrezgene id'. "\n";
-
 my $UniProt_base = basename($in_gff);
-
 $UniProt_base =~ s/\.gff$/\.UniProt.txt/;
-
 my $UniProt_file = catfile($result_dir, $UniProt_base);
-
 open UNIP, ">", $UniProt_file or die $!;
-
 my @geneIDs = &GeneTable2IDs($geneTable);
-
 my $geneIDs_length = scalar(@geneIDs);
-
 my %UP2GI = ();
 
 #my @query_ids = &splitArrays(' ', '1000', @geneIDs);
@@ -115,39 +102,25 @@ close UNIP;
 
 #### Checkpoint 2 ####
 my @check_2 = keys %UP2GI;
-
 my $check_2_lines = scalar(@check_2);
-
 $dtime = &getTIME();
-
 print $dtime. "\n\t". '- Find UniProt ids: '. $check_2_lines. ' of '. $check_1_lines. "\n";
-
 print "\t". '- Writing UniProt results to file: '. $UniProt_file. "\n";
 
 ## 3. Retrieve GO annotation by UniProt id
 print "\t". 'Step 3. Retrieve GO annotation by UniPort id'. "\n";
-
 my $go_anno_base = basename($in_gff);
-
 $go_anno_base =~ s/\.gff$//;
-
 my $go_anno_file = catfile($result_dir, "$go_anno_base\.GOanno.txt");
-
 my $go_entrez_index = catfile($result_dir, "$go_anno_base\.GO.db");
-
 open ANNO, ">", $go_anno_file or die $!;
-
 open LIST, ">", $go_entrez_index or die $!;
-
 my @UniP_ids = keys %UP2GI;
-
 my $UniP_length = scalar(@UniP_ids);
-
 my %check_3 = ();
 
 #my @query_UniProts = &splitArrays(',', '1000', @UniP_ids);
 my @query_UniProts = &splitArrays(',', $section, @UniP_ids);
-
 my %check_Num = ();
 
 foreach my $query_UniProt (@query_UniProts){
@@ -158,40 +131,27 @@ foreach my $query_UniProt (@query_UniProts){
     push @{$check_3{'anno'}}, (split "\n", $GOdb);
     push @{$check_3{'smp'}}, (split "\n", $smpGO);
     my @lines = split (/\n/, $smpGO);
-
     foreach my $l(@lines){
         my ($u, $g) = split /\t/,$l;
         $check_Num{'UniProt'}->{$u} = 1;
         $check_Num{'GO'}->{$g} = 1;
     }
 }
-
 my $Num_UniProt = scalar(keys %{$check_Num{'UniProt'}});
-
 my $Num_GO = scalar(keys %{$check_Num{'GO'}});
-
 close ANNO;
 close LIST;
 
 #### Checkpoint 3 ####
 my $check_3_anno = scalar(@{$check_3{'anno'}});
-
 my $check_3_smp = scalar(@{$check_3{'smp'}});
-
 $dtime = &getTIME();
-
 print $dtime. "\n\t". '- Retrieve the number of GO annotations: '. $check_3_anno. "\n";
-
 print "\t". '- Ouput entrezgene+go_id lines: '. $check_3_smp. "\n";
-
 print "\t". '- Retrieved '. $Num_UniProt. ' UniProt ids, with '. $Num_GO. ' of unique GO annotations.'. "\n";
-
 print "\t". '- Writing full go annotations to file: '. $go_anno_file. "\n";
-
 print "\t". '- Writing entrezgene + GO_id to file: '. $go_entrez_index. "\n";
-
 print $dtime. "\n\t". 'Finished.'. "\n";
-
 print $dash_line. "\n";
 
 #### Clear temp files ####
@@ -209,7 +169,6 @@ sub GFF2GeneTable{
         my ($seqname, $start, $end, $strand, $description) = (split(/\t/, $_))[0,3,4,6,8];
         my ($GeneName, $GeneID, $Locus) = qw(- - -);
         ($GeneName) = ($description =~ /locus_tag=(\w+)/);
-
         if($description =~ /Name.*gbkey.*locus_tag/){ # gff 1.20
             ($GeneName, $GeneID, $Locus) = ($_ =~ /Name=(.*)\;Dbxref=GeneID\:(\d+)\;.*locus_tag=(\w+)/);
             ($GeneName) = ($GeneName =~ /note=(\w+\-\w+)/)?$1:$GeneName;

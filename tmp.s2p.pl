@@ -1,12 +1,8 @@
-#!/usr/bin/perl -w
-use warnings;
-use strict;
-use Getopt::Std;
-use Data::Dumper;
+#!/usr/bin/env perl
 
 ######################################################################
 # This script is designed to determin the genome position of input   #
-# sRNAs.                                                             #
+# sRNAs. (1-chromosome)                                                            #
 # Date: 2012-12-22                                                   #
 #                                                                    #
 # update: 2013-12-21                                                 #
@@ -16,13 +12,23 @@ use Data::Dumper;
 #   replace [\w+] by [.*].                                           #
 ######################################################################
 
-my %opts = (t => "gene");
-getopts("f:t:g:", \%opts);
-die "Usage: perl $0 [-g] <genome.gff> [-f] <ref.fa> input.txt > out.txt" if (@ARGV != 1);
+use warnings;
+use strict;
+use Getopt::Std;
+use Data::Dumper;
 
-my $in_gff = $opts{g};
-my $in_fa  = $opts{f};
-my $infile = shift;
+
+
+
+sub sort2position {
+    my %opts = ();
+    getopts("f:g:o:t:", \%opts);
+    usage() if(@ARGV != 1);
+    
+    die("[-g|-f] Need input fasta file\n") if(!defined $opts{f} || !defined $opts{g});
+    my $in_gff = $opts{g};
+    my $in_fa  = $opts{f};
+    my $infile = shift;
 ################################################################################
 # Readin exclude list
 my %ex_list = (); # &read_txt($exclude) if (defined $exclude);
@@ -48,8 +54,7 @@ foreach (@lines){
     next if(/^\#/);
     my($g_begin,$g_end,$g_strand)=(split/\t/)[3,4,6];
     my $g_name;
-    if(/\t$opts{t}\t/) {
-#    if(/\tgene\t/){
+    if(/\tgene\t/){
         if(($g_name) = $_ =~ /locus_tag=(\w+)/){
         }elsif(($g_name) = $_ =~ /Name=(\w+)/){
         }elsif(($g_name) = $_ =~ /ID=gene\:(\w+)/){
@@ -77,7 +82,7 @@ foreach (@lines){
 
 # Delete known ncRNAs
 foreach my $e (keys %ex_list) {
-#    delete $gff{$e};
+    delete $gff{$e};
 }
 
 # Sort genes according to BEGIN position.
@@ -203,15 +208,46 @@ foreach my $j(@InLists){
 }
 
 ### Subroutines ###
-sub read_txt{
+sub read_txt {
     my $in = shift(@_);
     my %list = ();
-    open my $fh, "< $in" or die "$!";
-    while(<$fh>) {
+    open my $fh_in, "< $in" or die "Cannot open $in, $!\n";
+    while(<$fh_in>) {
         chomp;
         my $id = (split /\s+/)[0];
         $list{$id} = $_;
     }
+    close $fh_in;
     return %list;
+}
+
+sub guess_format {
+    my $in = shift(@_);
+    open my $fh_in, "< $in" or die "Cannot open $in, $!\n";
+    while(<$fh_in>) {
+        chomp;
+        next if(/^\#|^\s*$/);
+        my @tabs = split /\t/;
+        my $flag = $_ =~ /.*\t.*\t\d+\t\d+\t\d+\t[+-]/;
+        die("[line-$.] of $in is not correct:\n$_\n") if(! $flag);
+    }
+    close $fh_in;
+}
+
+sub usage {
+    die("
+Usage: sort2position.pl [options] <in.txt>
+
+Options: -f <STR>   : reference in fasta file.
+         -g <STR>   : annotation file in GFF format.
+         -o <STR>   : output file, default [STDOUT]
+         -t <STR>   : using the type of features in GFF annotation.
+                      geen, CDS, [gene]
+         <in.txt>   : input file should contain at least 6 columns
+                      Name chr length start end strand
+
+Example:
+sort2position.pl -f ref.fna -g ref.gff -o tag.pos.txt tag.txt
+\n");
 }
 

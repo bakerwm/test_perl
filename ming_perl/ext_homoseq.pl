@@ -185,8 +185,8 @@ Usage: ext_homoseq.pl [options] <input.fa>
 Options: -o <STR>   : Dir for output fasta seq
          -d <STR>   : Input a database file, in FASTA format
          -n <STR>   : How to name the new sequences?
-                      id=NC_123456, name=M_tub_H37Rv,
-         -f <STR>   : (optional), output position in in db
+                      id=NC_123456, name=M_tub_H37Rv [default: id]
+         -f <STR>   : (optional), filename, write the position in in db
 
 Example:
 ext_homoseq.pl -o subseq -d db.fa -n id input.fa

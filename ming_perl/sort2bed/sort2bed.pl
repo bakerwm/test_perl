@@ -264,8 +264,7 @@ sub read_sort{
     my $count = 0;
     open F, "<$fh_sort" or die "$!\n";
     while(my $i = <F>){
-        next if ($i =~ /^\s*$/); # skip blank lines
-        next if($i =~ /^\#/);
+        next if ($i =~ /^\s*$|^\#/); # skip blank lines
         chomp($i);
         $i =~ s/\r//; # chomp the Windown newline
         my ($name, $chrom, $cont, $start, $end, $strand, $tail) = split(/\s+/, $i, 7);

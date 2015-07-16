@@ -28,7 +28,9 @@ die("Unknown command [$command] \n") if(! defined($prog{$command}));
 
 exit(0);
 
+#######################################
 # sort to plots data for circos
+#######################################
 sub sort2circosplot {
     my %opts = (s => '+/-', k => 1, m => 1);
     getopts('o:s:k:a:m:c', \%opts);
@@ -134,13 +136,87 @@ sub randcolor {
     return 'fill_color=chr'.$i;
 }
 
+#####################################################
+# sort to linker files
+#####################################################
+
+sub sort2link {
+    my %opts = (a => "1", b => "2", A => "chr1", B => "chr2");
+    getopts("i:a:b:A:B:o:", \%opts);
+    die("
+Usage: sort2circos.pl link [options] <file1 file2>
+
+Options: -o <STR>   : Output file, [STDOUT]
+         -i <STR>   : Input file, contain ids in pair
+         -a <INT>   : Col-a in INPUT for the ids in file1 [1]
+         -b <Int>   : col-b in INPUT for the ids in file2 [2]
+         -A <STR>   : The chr name of left id: [chr1]
+         -B <STR>   : The chr name of right id: [chr2]
+
+         <file1...n>: tab file contain the locations
+                      file1,[col_id],[start:stop]
+
+Examples:
+1. using sort files as input
+sort2circos.pl link -i input.txt -a 1 -b 2 fileA.txt,1,4,5 fileB.txt,1,4,5
+\n") if(@ARGV != 2);
+
+    my ($t1, $t2) = @ARGV;
+    my $h1 = parse_location($t1);
+    my $h2 = parse_location($t2);
+    my %infoA = %$h1;
+    my %infoB = %$h2;
+    open my $fh_f, "< $opts{i}" or die "Cannot open $opts{i}, $!\n";
+    my $links = '';
+    while(<$fh_f>) {
+        chomp;
+        next if(/(^\s*$)|(^\#)/);
+        my @tabs = split /\s+/;
+        my $idA  = $tabs[$opts{a} - 1];
+        my $idB  = $tabs[$opts{b} - 1];
+        warn("[$idA] not found in $t1\n") if(! exists $infoA{$idA});
+        warn("[$idB] not found in $t2\n") if(! exists $infoB{$idB});
+        next if( !exists $infoA{$idA} || !exists $infoB{$idB});
+        $links .= join("\t", $opts{A}, $infoA{$idA}, $opts{B}, $infoB{$idB})."\n";
+    }
+    if(defined $opts{o}){
+        open my $fh_out, "> $opts{o}" or die "Cannot open $opts{o}, $!\n";
+        print $fh_out $links;
+        close $fh_out;
+    }else {
+        print STDOUT $links;
+    }
+}
+
+sub parse_location {
+    my $in = shift(@_);
+    if( (split /\,/, $in) != 4 ) {    
+        die("[$in] file not match format: file,1,4,5\n");
+    }
+    my ($f, $a, $x, $y) = split /\,/, $in;
+    ($x, $y) = ($x < $y)?($x, $y):($y, $x);
+    my $col_max = ($a > $y)?$a:$y;
+    die("[$in] file: $f not found\n") if(! -e $f);
+    my %info = ();
+    open my $fh_f, "< $f" or die "Cannot open $f, $!\n";
+    while(<$fh_f>) {
+        chomp;
+        next if(/(^\s*$)|(^\#)/);
+        my @tabs = split /\s+/;
+        die("[wrong column] $in \n") if(@tabs < $col_max);
+        $info{$tabs[$a - 1]} = $tabs[$x - 1] . "\t" . $tabs[$y - 1];
+    }
+    close $fh_f;
+    return(\%info);
+}
+
+
 sub usage {
     die(qq/
 Usage: sort2circos.pl <command> [options] \n
 Command: plot   Change the input txt to circos plots: histogram, heatmap, 
                 line, tile, ...
-         text   Change the input txt to text labels:
-         line   Change the input txt to link plots:
+         link   Change the input txt to link plots:
 \n/);
 }
 

@@ -11,7 +11,13 @@
 
 use strict;
 use warnings;
+
 use Data::Dumper;
+
+my $id_prefix = 'ncRv';
+my $length_prefix = 2;
+#my $id_prefix = 'ncMRA';
+#my $length_prefix = 4;
 
 my $usage="perl  $0  IN.ptt  list.txt  >out.txt\n";
 my $ptt=shift or die "Input ptt file:\n$usage";
@@ -78,7 +84,8 @@ foreach my $g(sort keys %IGR){
         my $str=$ma[5];
         my ($R1,$R2)=split/\:/,$g;
 #        my $head="ncRa1";       
-        my $head="ncRv1";
+#        my $head="ncRv1";
+        my $head = $id_prefix . '1';
         my $num=&RvNum($R1);
         my $ord=$fix[$rank];
         my $tail=($str eq "-")?"c":"";
@@ -97,7 +104,8 @@ foreach my $a(sort keys %AS){
         my @mb=split/\t/,$lin,13;
         my $str=$mb[5];
 #        my $head="ncRa";
-        my $head="ncRv";
+#        my $head="ncRv";
+        my $head = $id_prefix;
         my $num=&RvNum($a);
         my $ord=$fix[$rank];
         my $tail=($str eq "-")?"c":"";
@@ -114,8 +122,25 @@ foreach my $a(sort keys %AS){
 # For H37Ra
 sub RvNum{
     my $in=shift;
-    $in=~s/c$//;
-    my $end=length($in)-2;
-    my $num=substr($in,2,$end);
+#    $in=~s/[a-zA-Z]$//;
+    $in =~ s/c$//;
+    my $end=length($in) - $length_prefix;
+    my $num=substr($in, $length_prefix ,$end);
     return $num;
 }
+
+sub usage {
+    die("
+Usage: Name_ncRNA.pl [options] <in.txt>
+
+Options: -a <STR>   : annotation file (PTT)
+         -p <STR>   : the prefix of the new name
+
+         <in.txt>   : tab-separated file
+
+Notes:
+1. new name would be in the following formats:
+ncRv1234A ncRv1234Ac ncRv11234
+\n");
+}
+

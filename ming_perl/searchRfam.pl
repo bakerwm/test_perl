@@ -122,10 +122,10 @@ sub usage {
 Usage: searchRfam.pl [options] <in.fa>
 
 Options: -o     : The dir for output files
-         -f     : the original file of input.fa, tab separated.
+         -f     : the original tab file of input
          -d     : path to the Rfam.cm database
                   [default: \/share\/wangming\/database\/Rfam\/current\/Rfam.cm]
-         -s     : path to command: cmscan
+         -s     : path to command: [default: cmscan]
 
 Examples:
 1. only output Rfam output (id)
@@ -133,6 +133,5 @@ searchRfam.pl -o out input.fa
 
 2. add Rfam annotation to a txt file
 searchRfam.pl -o out -f input.txt -d Rfam.cm input.fa
-
 \n/);
 }

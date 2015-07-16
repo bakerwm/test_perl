@@ -22,12 +22,14 @@ my $chrom;
 
 parse_para();
 find_features();
+exit(1);
 
 sub parse_para{
     my %opts = ();
     getopts("a:n:", \%opts);
-    my $usage = "Usage: $0 [-a] <ref.fa> [-n] <ref.name> out.dir\n";
-    die("$usage") if(@ARGV != 1);
+#    my $usage = "Usage: $0 [-a] <ref.fa> [-n] <ref.name> out.dir\n";
+#    die("$usage") if(@ARGV != 1);
+    usage() if(@ARGV != 1);
     die("[-a] need ref fa\n") unless defined $opts{a};
     my $fa_name = $fa = $opts{a};
     $fa_name =~ s/\.f[n]*a//;
@@ -70,7 +72,7 @@ sub find_features{
         $end--;
         print $fh_mRNA join("\t", ($chrom, $start, $end, $name, $length, $strand)), "\n";
         my $as_str = ($strand eq '+')?'-':'+';
-        print $fh_as join("\t", ($chrom, $start, $end, $name, $length, $as_str)), "\n";
+        print $fh_as join("\t", ($chrom, $start, $end, "AS_".$name, $length, $as_str)), "\n";
     }
     close $fh_mRNA;
     close $fh_as;
@@ -84,7 +86,9 @@ sub find_features{
     }
     close $fh_gene;
     system "bedtools complement -i $gene -g $fa_list > tmp.bed";
-    open my $fh_tmp, "< tmp.bed" or die "$!";
+    # filter IGR file, and trim 1-base at both ends
+    system "cat tmp.bed | awk \'{\$2++; \$3--; if((\$3-\$2)>20) print \$1\"\\t\"\$2\"\\t\"\$3 }\' > tmp_trim.bed  ";
+    open my $fh_tmp, "< tmp_trim.bed" or die "$!";
     my $counter = 1;
     while(<$fh_tmp>){
         chomp;
@@ -99,7 +103,7 @@ sub find_features{
     }
     close $fh_tmp;
     close $fh_igr;
-    unlink("tmp.bed", $gene);
+    unlink("tmp.bed", "tmp_trim.bed", $gene);
     # rRNA & tRNa
     my %t = read_rnt();
     foreach my $m (keys %t){
@@ -209,5 +213,20 @@ sub read_rnt{
     close $fh_rnt;
     die("found no lines in PTT file") if($count == 0);
     return %out;
+}
+
+sub usage {
+    die("
+Usage: find_genomefeatures.pl [options] <outdir>
+
+Options: -a : <STR>     : fasta file of NCBI bacteria genome
+                          need GFF, PTT, RNT files in the same dir
+         -n : <STR>     : name of Chr for ouput
+Note: 
+1. only output IGRs > 20 nt
+
+Example: 
+find_genomefeatures.pl -a ~/NCBI/NC_000962.fna -n NC_000962.3 out
+\n");
 }
 

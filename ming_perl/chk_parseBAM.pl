@@ -25,7 +25,7 @@ my %func = ("samtools"     => '',
             "sort2bed.pl"  => '',
             "search_cov_regions.pl"   => '',
             "sort_to_position_sig.pl" => '',
-            "sort2candi_v1.pl"        => '',
+            "sort2candi.pl"        => '',
             "chk_seq2rnaz.pl"         => '',
             "featureCounts"           => '');
 
@@ -178,7 +178,7 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
         renameID($tag, 4, $tag_new); # id in col-4
         push @run_filts, "perl $func{'sort2bed.pl'} -t bed2sort -i $tag_new -o $tag_txt";
         push @run_filts, "perl $func{'sort_to_position_sig.pl'} -f $opts{f} -g $opts{g} $tag_txt > $tag_pos";
-        push @run_filts, "perl $func{'sort2candi_v1.pl'} $tag_pos";
+        push @run_filts, "perl $func{'sort2candi.pl'} $tag_pos";
         run_cmd('1', @run_filts);
 # count + tpm
         my @run_counts = ();
@@ -343,7 +343,7 @@ sub bam2tags {
     push @runs, "perl $func{'search_cov_regions.pl'} -c $cov_cutoff -s - $rev_cov > $tag_n";
     push @runs, "cat $tag_p $tag_n > $tag";
     push @runs, "perl $func{'sort_to_position_sig.pl'} -f $ref -g $gff $tag > $tag_pos";
-    push @runs, "perl $func{'sort2candi_v1.pl'} $tag_pos";
+    push @runs, "perl $func{'sort2candi.pl'} $tag_pos";
     return ($tag, @runs);
 }
 
@@ -748,5 +748,7 @@ Command: stat   count mapping reads for each BAM
 # 2015-06-15
 # v0.5
 #    1. replace HTSeq-count by FeatureCounts to count reads on each sRNAs. (much faster)
+#    2. change para for featureCounts: -M --fraction count reads 1/n 
+# 
 #
 # Author: Wang Ming, wangmcas@gmail.com

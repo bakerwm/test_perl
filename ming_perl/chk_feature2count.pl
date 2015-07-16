@@ -55,7 +55,7 @@ sub seq2count {
 
     # create temp dir
     my $origin_path = abs_path(cwd);
-    my $temp_dir = catdir(cwd, 'temp'.int(rand(10000)));
+    my $temp_dir = catdir(cwd, 'temp'.'.'.$$.'_'.int(rand(1000000)));
     make_path($temp_dir) if(! -d $temp_dir);
     chdir $temp_dir;
     for my $b (sort @bams) { my $flag = sprintf"%0d", $num; if($opts{p} eq 'htseq-count' ) {
@@ -144,9 +144,18 @@ sub featureCounts_count {
     my $in_tmp    = catfile($outdir, basename($in).'.tmp');
     my $in_tmp2   = catfile($outdir, basename($in).'.tmp2');
     my $in_TPM    = catfile($outdir, basename($in).'.TPM.'.$num);
+
+    my $fc_para   = '';
+    if($bam_name =~ /\_[1-9]+$/) {  # PE reads
+        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
+    }else {
+        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);    
+    }
+
     if( not_blank_file($in) ) {
         push @runs, "perl $func{'sort2bed.pl'} -t sort2gff -f exon -s $chr -i $in -o $in_gff";
-        push @runs, "$func{'featureCounts'} -p -T 5 -s $lib_type -M -O --donotsort -t exon -g gene_id -a $in_gff -o $in_tmp $bam >>$in\.log 2>&1"; # need: -O 
+        push @runs, "$func{'featureCounts'} $fc_para $bam > $in\.log 2>&1";
+#        push @runs, "$func{'featureCounts'} -p -P -d 40 -D 500 -C  -T 5 -s $lib_type -M --fraction -O -f --donotsort -t exon -g gene_id -a $in_gff -o $in_tmp $bam >>$in\.log 2>&1"; # need: -O 
 # keep summary
         push @runs, "mv $in_tmp\.summary $in_tmp\.summary\.$num";
         push @runs, "cat $in_tmp | sed  \'1,2 d\' | sort -k1 > $in_tmp2"; 
