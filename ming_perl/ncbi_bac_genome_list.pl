@@ -49,22 +49,22 @@ sub show_date {
     return $date;
 }
 
-sub mp_runs {
-    my @commands = @_;
-    my @pids;
-    for my $cmd ( @commands ) {
-        my $pid = fork;
-        if( $pid ) {
-            push @pids, $pid;
-            next;
-        }
-#        system( $cmd );
-        my $id_acc = read_genome_dir($g);
-        exit;
-    }
-    wait for @pids;
-    system "sleep 5";
-}
+#sub mp_runs {
+#    my @commands = @_;
+#    my @pids;
+#    for my $cmd ( @commands ) {
+#        my $pid = fork;
+#        if( $pid ) {
+#            push @pids, $pid;
+#            next;
+#        }
+##        system( $cmd );
+#        my $id_acc = read_genome_dir($g);
+#        exit;
+#    }
+#    wait for @pids;
+#    system "sleep 5";
+#}
 
 # parsing the genome IDs
 #

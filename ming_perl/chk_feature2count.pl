@@ -29,7 +29,7 @@ my $f = check_tools(\%func);
 
 &seq2count();
 
-exit(1);
+#exit(1);
 
 sub seq2count {
     my %opts = (o => 'Count_seqs', p => 'featureCounts', s => 'yes');
@@ -117,7 +117,7 @@ sub htseq_count {
         push @runs, "sort -k1 $in_tmp | sed -e \'/^\_/d\' > $in_tmp2";
         # count tpm
         my $bam_mapped = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
-        my $ratio = sprintf"%.4f", 1000000/$bam_mapped;
+        my $ratio = sprintf"%.2f", 1000000/$bam_mapped;
         push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$2, \$2*$ratio)}\'  \< $in_tmp2 | cut -f2-3 > $in_TPM";
     }
     return @runs;
@@ -161,7 +161,7 @@ sub featureCounts_count {
         push @runs, "cat $in_tmp | sed  \'1,2 d\' | sort -k1 > $in_tmp2"; 
         # count tpm
         my $bam_mapped = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
-        my $ratio = sprintf"%.4f", 1000000/$bam_mapped;
+        my $ratio = sprintf"%.2f", 1000000/$bam_mapped;
         push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$7, \$7*$ratio)}\'  \< $in_tmp2 | cut -f2-3 > $in_TPM";
     }
     return @runs;
@@ -194,7 +194,7 @@ sub bedtools_count {
         push @runs, "$func{'bedtools'} multicov -split -D $str_type -bams $bam -bed $in_bed > $in_tmp";
         # count tpm
         my $bam_mapped = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
-        my $ratio      = sprintf"%.4f", 1000000/$bam_mapped;
+        my $ratio      = sprintf"%.2f", 1000000/$bam_mapped;
         push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$7, \$7*$ratio)}\'  \< $in_tmp | cut -f2-3 > $in_TPM";
     }
     return @runs;
@@ -285,3 +285,16 @@ Options: -o     Output path. [Count_seqs]
 
 \n/);
 }
+
+__END__
+
+Changelog
+
+2015-08-08
+  1.change TPM to 2-digits format
+
+
+
+
+
+

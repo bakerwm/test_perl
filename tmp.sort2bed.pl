@@ -15,7 +15,7 @@ use warnings;
 use Getopt::Long;
 
 sort2bed();
-exit(1);
+#exit(1);
 
 ###
 sub sort2bed {
@@ -68,10 +68,10 @@ sub sort2bed {
 sub check_type {
     my $in  = $_[0];
     my $out = $_[1];
-    if( ! $in =~ /gff|ptt|bed|sort|blast/ ) { # && ! $out =~ /gff|ptt|bed|sort|blast|fa/ ) {
-        die("[-a $in] unknown format\n");
-    }elsif( ! $out =~ /gff|ptt|bed|sort|blast|fa/ ) {
-        die("[-b $out] unknown format\n");
+    if( ! $in =~ /gff|ptt|bed|sort|blast8/ ) { # && ! $out =~ /gff|ptt|bed|sort|blast|fa/ ) {
+        die("[-a $in] unknown format  ---- a\n");
+    }elsif( ! $out =~ /gff|ptt|bed|sort|blast8|fa/ ) {
+        die("[-b $out] unknown format ---- b\n");
     }
 }
 
@@ -82,13 +82,13 @@ sub guess_fmt {
     my $fmt = '';
     my @tabs = split /\t/, $in;
     if(@tabs >= 6) {
-        if($in =~ /\d+\t\d+\t[+-]/) {
+        if($in =~ /\t\d+\t\d+\t[+-]/) {
             $fmt = 'sort';
-        }elsif($in =~ /\d+\t\d+\t.*\t\d+\t[+-]/) {
+        }elsif($in =~ /\t\d+\t\d+\t.*\t\d+\t[+-]/) {
             $fmt = 'bed';
         }elsif($in =~ /^\d+\.\.\d+\t/) {
             $fmt = 'ptt';        
-        }elsif($in =~ /\d+\t\d+\t\.\t[+-]\t\.\t/) {
+        }elsif($in =~ /\t\d+\t\d+\t.\t[+-]\t.\t/) {
             $fmt = 'gff';
         }elsif($in =~ /\d+\.(\d+\t){7}/) {
             $fmt = 'blast8';
@@ -124,7 +124,7 @@ sub fmt_convert {
         $in = read_bed($line, $name);
     }elsif($from =~ /^sort$/) {
         $in = read_sort($line, $name);
-    }elsif($from =~ /^blast$/) {
+    }elsif($from =~ /^blast8$/) {
         $in = read_blast8($line, $name);
     }else {
         die("[-a $from] unknown format\n");
@@ -295,8 +295,8 @@ sub txt_to_seq {
     my $start  = $_[1];
     my $end    = $_[2];
     my $strand = $_[3];
-    $start --; # perl index 0-left most
     my $length = $end - $start + 1;
+    $start --; # perl index 0-left most
     my $fa = substr($in, $start, $length);
     if($strand eq '-') {
         $fa =~ tr/ATCGagcg/TAGCtagc/;
@@ -544,3 +544,7 @@ Change log
 
 2015-07-16
   v1.1 rewrite the program, support STDIN and STDOUT
+
+2015-08-29
+  txt_to_fa: start (--1), cause length + 1.
+

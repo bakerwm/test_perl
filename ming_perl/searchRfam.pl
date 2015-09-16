@@ -26,7 +26,7 @@ use POSIX qw(strftime);
 use Getopt::Std;
 
 searchRfam();
-exit (1);
+#exit (1);
 
 ###
 sub searchRfam {

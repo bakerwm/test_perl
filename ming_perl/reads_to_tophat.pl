@@ -74,6 +74,7 @@ sub get_tophat_cmd {
     my ($index, $gff, $outdir, $read) = @_;
     my $sub_read  = (split /\,|\s+/, $read)[0];
     my ($read_name) = basename($sub_read) =~ /(.*)\.f[astq]+/;
+    $read_name   =~ s/\.trim// if($read_name =~ /trim/); # trim the file name
     my $sub_dir  = catdir($outdir, $read_name);
     my $bam_out  = catfile($sub_dir, 'accepted_hits.bam');
     my $bam_filt = catfile($sub_dir, $read_name . '.f.bam');
@@ -107,3 +108,4 @@ read_to_tophat.pl -d Ra -g Ra.gff -o Ra_out reads.list
 \n");
 }
 
+### END OF FILE ###

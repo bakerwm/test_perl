@@ -15,7 +15,7 @@ use Getopt::Std;
 use Data::Dumper;
 
 name_sRNA();
-exit(1);
+#exit(1);
 
 sub name_sRNA {
     my %opts = (n => 'sRNA');
@@ -256,9 +256,5 @@ Change log:
   Need to do:
   PTT: only used for evalulate the name of cds. (further plan: locate sRNA)
 
-
-
-
-
-
-
+  v0.2  
+  warning: this script will discard the duplicate seqs (sort by: start,end,strand)

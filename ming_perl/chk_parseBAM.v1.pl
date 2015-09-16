@@ -19,13 +19,14 @@ use POSIX qw(strftime);
 use Getopt::Std;
 use Data::Dumper;
 
-my %func = ("samtools"     => '',
-            "bedtools"     => '',
-            "htseq-count"  => '',
-            "sort2bed.pl"  => '',
+my %func = ("samtools"      => '',
+            "bedtools"      => '',
+            "htseq-count"   => '',
+            "featureCounts" => '',
+            "sort2bed.pl"   => '',
             "search_cov_regions.pl"   => '',
             "sort_to_position_sig.pl" => '',
-            "sort2candi_v1.pl"        => '',
+            "sort2candi.pl"           => '',
             "chk_seq2rnaz.pl"         => '');
 
 &usage if(@ARGV < 1);
@@ -144,17 +145,17 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
     my $RNAz_db = abs_path($opts{d});
     system"samtools faidx $opts{f}";
     my $ref_idx = $opts{f} . '.fai';
-    my $tag_dir = catdir($opts{o}, 'find_tags');
+    my $tag_dir = catdir($opts{o}, '3.find_tags');
     my @tags_files = ();
 # find tags
     for my $bam (sort &readBAMlist) {
         $opts{s} = 0 if(! defined $opts{s});
         my ($tag_out, @run_tags) = bam2tags($bam, $ref_idx, $opts{f}, $opts{g}, $opts{s}, $opts{c}, $tag_dir);
         push @tags_files, $tag_out;
-        run_cmd('0', @run_tags);
+        run_cmd('1', @run_tags);
     }
 # merge tags
-    my $merge_dir  = catdir($opts{o}, 'merge_tags');
+    my $merge_dir  = catdir($opts{o}, '4.merge_tags');
     make_path($merge_dir) if(! -d $merge_dir);
     my @run_merges = merge2tags($merge_dir, @tags_files);
     run_cmd('1', @run_merges);
@@ -167,7 +168,7 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
         @sub_beds   = filtermerged($merge_dir, $merged_file, $lib_num);
     }
     for my $tag (sort @sub_beds) {
-        my @run_filts  = ();
+        my @run_filts = ();
         my $tag_dir   = dirname($tag);
         my $tag_new   = catfile($tag_dir, 'tag.newID.bed');
         my $tag_txt   = catfile($tag_dir, 'tag.newID.txt');
@@ -175,9 +176,9 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
         my $tag_sRNA  = catfile($tag_dir, 'tag.newID.pos_sRNA.txt');
         my $tag_count = catfile($tag_dir, 'tag.newID.pos_sRNA.count.txt');
         renameID($tag, 4, $tag_new); # id in col-4
-        push @run_filts, "$func{'sort2bed.pl'} -t bed2sort -i $tag_new -o $tag_txt";
-        push @run_filts, "$func{'sort_to_position_sig.pl'} -f $opts{f} -g $opts{g} $tag_txt > $tag_pos";
-        push @run_filts, "$func{'sort2candi_v1.pl'} $tag_pos";
+        push @run_filts, "perl $func{'sort2bed.pl'} -t bed2sort -i $tag_new -o $tag_txt";
+        push @run_filts, "perl $func{'sort_to_position_sig.pl'} -f $opts{f} -g $opts{g} $tag_txt > $tag_pos";
+        push @run_filts, "perl $func{'sort2candi.pl'} $tag_pos";
         run_cmd('1', @run_filts);
 # count + tpm
         my @run_counts = ();
@@ -186,7 +187,7 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
             my $flag = 1;
             my @hts  = ();
             for my $bam (sort &readBAMlist) {
-                @hts = txt2count($bam, $tag_sRNA, $tag_count, $flag);
+                @hts = txt2count($bam, $tag_sRNA, $tag_dir, $flag);
                 push @run_counts, @hts;
                 $flag ++;
             }
@@ -205,7 +206,7 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
         }
         run_cmd('1', @run_rnazs);
 # wrap output
-        my $wrap_dir = catdir($opts{o}, 'report');
+        my $wrap_dir = catdir($opts{o}, '5.report');
         make_path($wrap_dir) if(! -d $wrap_dir);
         my $sRNA_RNAz   = catfile(catdir($tag_dir, 'RNAz_out'), 'best_RNAz.bed');
         my $sRNA_report = catfile($wrap_dir, basename($tag_dir) . '.report.txt');
@@ -221,7 +222,7 @@ parseBAM.pl tags -o outdir -f ref.fa -g ref.gff inbam.list > log
 
 #
 sub run_cmd {
-    my @in = @_;
+    my @in  = @_;
     my $run = shift(@in);
     print join("\n", @in). "\n\n";
     if($run) {
@@ -326,11 +327,11 @@ sub bam2tags {
     my $tag_pos   = catfile($smp_dir, $bam_name . '.tag.pos.txt');
     push @runs, "$func{'bedtools'} genomecov -d -split -scale $scale -ibam $fwd_bam -g $ref_idx > $fwd_cov";
     push @runs, "$func{'bedtools'} genomecov -d -split -scale $scale -ibam $rev_bam -g $ref_idx > $rev_cov";
-    push @runs, "$func{'search_cov_regions.pl'} -c $cov_cutoff -s + $fwd_cov > $tag_p";
-    push @runs, "$func{'search_cov_regions.pl'} -c $cov_cutoff -s - $rev_cov > $tag_n";
+    push @runs, "perl $func{'search_cov_regions.pl'} -c $cov_cutoff -s + $fwd_cov > $tag_p";
+    push @runs, "perl $func{'search_cov_regions.pl'} -c $cov_cutoff -s - $rev_cov > $tag_n";
     push @runs, "cat $tag_p $tag_n > $tag";
-    push @runs, "$func{'sort_to_position_sig.pl'} -f $ref -g $gff $tag > $tag_pos";
-    push @runs, "$func{'sort2candi_v1.pl'} $tag_pos";
+    push @runs, "perl $func{'sort_to_position_sig.pl'} -f $ref -g $gff $tag > $tag_pos";
+    push @runs, "perl $func{'sort2candi.pl'} $tag_pos";
     return ($tag, @runs);
 }
 
@@ -351,7 +352,7 @@ sub merge2tags {
             push @runs, "sed -e \'s/^/Lib$flag\_/\' $i > $i\.tmp";
         }
         # sort 2 bed
-        push @runs, "$func{'sort2bed.pl'} -t sort2bed -i $i\.tmp -o $i_bed";
+        push @runs, "perl $func{'sort2bed.pl'} -t sort2bed -i $i\.tmp -o $i_bed";
         push @runs, "rm -rf $i\.tmp";
         $beds_line .= $i_bed. " ";
         $count++;
@@ -459,26 +460,64 @@ sub filtermerged {
     return (sort values %{$lib{'tag'}});
 }
 
+#sub txt2count {
+#    my ($bam, $infile, $outfile, $flag) = @_;
+#    my $bam_name = basename($bam);
+#    $bam_name   =~ s/(\.|\.s.|\.f.s.|\.trim\.gz\.f\.s\.)bam//;
+#    my $lib_type = ($bam_name =~ /\_[12]$/)?'reverse':'yes'; # PE=reverse, SE=yes
+#    my @runs = ();
+#    my $infile_gff  = $infile;
+#    $infile_gff =~ s/\.txt$/.gff/;
+#    if( not_blank_file($infile) ) {
+#        push @runs, "perl $func{'sort2bed.pl'} -t sort2gff -f exon -i $infile -o $infile_gff";
+#        push @runs, "$func{'htseq-count'} -q -f bam -s $lib_type -t exon $bam $infile_gff > $infile\.tmp";
+#        push @runs, "sort -k1 $infile.tmp | sed -e \'/^\_/d\' > $infile\.tmp2";
+## add tpm
+#        # count tpm
+#        my $mapped  = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
+#        my $m_scale = sprintf"%.4f", $mapped/1000000;
+#        push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$2, \$2/$m_scale)}\' $infile\.tmp2 | cut -f2-3 > $infile\.TPM\.$flag";
+#    }
+#    return @runs;
+#}
+
 sub txt2count {
-    my ($bam, $infile, $outfile, $flag) = @_;
+    my $bam    = $_[0];
+    my $in     = $_[1];
+    my $outdir = $_[2];
+    my $flag   = sprintf "%0d", $_[3];
+    ### determine strand
     my $bam_name = basename($bam);
-    $bam_name   =~ s/(\.|\.s.|\.f.s.|\.trim\.gz\.f\.s\.)bam//;
-    my $lib_type = ($bam_name =~ /\_[12]$/)?'reverse':'yes'; # PE=reverse, SE=yes
-    my @runs = ();
-    my $infile_gff  = $infile;
-    $infile_gff =~ s/\.txt$/.gff/;
-    if( not_blank_file($infile) ) {
-        push @runs, "$func{'sort2bed.pl'} -t sort2gff -f exon -i $infile -o $infile_gff";
-        push @runs, "$func{'htseq-count'} -q -f bam -s $lib_type -t exon $bam $infile_gff > $infile\.tmp";
-        push @runs, "sort -k1 $infile.tmp | sed -e \'/^\_/d\' > $infile\.tmp2";
-# add tpm
-        # count tpm
-        my $mapped  = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
-        my $m_scale = sprintf"%.4f", $mapped/1000000;
-        push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$2, \$2/$m_scale)}\' $infile\.tmp2 | cut -f2-3 > $infile\.TPM\.$flag";
+    $bam_name    =~ s/(\.|\.s.|\.f.s.|\.trim\.gz\.f\.s\.)bam//;
+    my $lib_type = '1'; # SE=1, PE=2
+    $lib_type    = '2' if($bam_name =~ /\_[12]$/);
+    my @runs      = ();
+    chomp(my $chr = qx($func{'samtools'} view $bam | head -n1 | awk '{print \$3}'));
+    my $in_gff    = basename($in);
+    $in_gff       =~ s/\.txt$/.gff/;
+    $in_gff       = catfile($outdir, $in_gff);
+    my $in_tmp    = catfile($outdir, basename($in) . '.tmp');
+    my $in_tmp2   = catfile($outdir, basename($in) . '.tmp2');
+    my $in_TPM    = catfile($outdir, basename($in) . '.TPM.' . $flag);
+    ###
+    my $fc_para   = '';
+    if($bam_name  =~ /\_[1-9]$/) {
+        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
+    }else {
+        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
+    }
+    ###
+    if( not_blank_file($in) ) {
+        push @runs, "perl $func{'sort2bed.pl'} -t sort2gff -f exon -s $chr -i $in -o $in_gff";
+        push @runs, "$func{'featureCounts'} $fc_para $bam > $in\.log 2>&1";
+        push @runs, "mv $in_tmp\.summary $in_tmp\.summary\.$flag";
+        push @runs, "cat $in_tmp | sed  \'1,2 d\' | sort -k1 > $in_tmp2";
+        ### count TPM
+        my $bam_mapped = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
+        my $ratio = sprintf"%.2f", 1000000/$bam_mapped;
+        push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$7, \$7*$ratio)}\'  \< $in_tmp2 | cut -f2-3 > $in_TPM";
     }
     return @runs;
-
 }
 
 sub seq2RNAz {
@@ -488,8 +527,8 @@ sub seq2RNAz {
     my $rnaz_log = catfile($outdir, 'rnaz.log');
 #    my $rnaz_bed = catfile($outdir, 'best_RNAz.bed');
     my @runs = ();
-    push @runs, "$func{'sort2bed.pl'} -t sort2fa -g $ref -i $txt -o $txt_fa";
-    push @runs, "$func{'chk_seq2rnaz.pl'} RNAz -d $rnaz_db -o $outdir $txt_fa > $rnaz_log 2>&1 ";
+    push @runs, "perl $func{'sort2bed.pl'} -t sort2fa -g $ref -i $txt -o $txt_fa";
+    push @runs, "perl $func{'chk_seq2rnaz.pl'} RNAz -d $rnaz_db -o $outdir $txt_fa > $rnaz_log 2>&1 ";
     return @runs;
 }
 
@@ -501,7 +540,6 @@ sub wrap_output {
     my %hf = %{$vf};
     my %hz = %{$vz};
     my %he = %{$ve};
-
     my $rpt_out = '';
     if( not_blank_file($pos) ) {
         open my $fh_pos, "< $pos" or die "$!";

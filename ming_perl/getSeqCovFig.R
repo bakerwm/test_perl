@@ -62,9 +62,9 @@ PosToFig <- function(x) {
 
 #################################
 # Load parameters
-Usage <- "Usage: Rscript getSeqCovFig.R <InDir> <InFile> <OutDir>"
+Usage <- "Usage: Rscript getSeqCovFig.R <covdir> <seq.txt> <outdir>"
 args  <- commandArgs(trailingOnly=TRUE)
-#if(length(args) != 3) stop(Usage)
+if(length(args) != 3) stop(Usage)
 
 InDir  <- args[1]
 InFile <- args[2]
@@ -171,14 +171,14 @@ ptime <- system.time({
   
   # change OutDir to image
   # create another OutDir
-  cmd1 <- paste("mv", OutDir, "images", sep = " ")
-  cmd2 <- paste("mv", "images", OutDir, sep = " ")
-  cmd3 <- paste("perl", "png_to_html.pl", InFile, OutDir, sep = " ")
+  #cmd1 <- paste("mv", OutDir, "images", sep = " ")
+  #cmd2 <- paste("mv", "images", OutDir, sep = " ")
+  #cmd3 <- paste("perl", "png_to_html.pl", InFile, OutDir, sep = " ")
   
-  t1 <- try(system(cmd1, intern = TRUE))
-  dir.create(OutDir, showWarnings = TRUE)
-  t2 <- try(system(cmd2, intern = TRUE))
-  t3 <- try(system(cmd3, intern = TRUE))
+  #t1 <- try(system(cmd1, intern = TRUE))
+  #dir.create(OutDir, showWarnings = TRUE)
+  #t2 <- try(system(cmd2, intern = TRUE))
+  #t3 <- try(system(cmd3, intern = TRUE))
   
 })
 print(paste(InFile, ptime[3]))

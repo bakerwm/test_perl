@@ -1,0 +1,9 @@
+new("big.matrix.descriptor"
+    , description = structure(list(sharedType = "FileBacked", filename = "test03_1.coverage.n.bin", 
+    totalRows = 10000, totalCols = 3, rowOffset = c(0, 10000), 
+    colOffset = c(0, 3), nrow = 10000, ncol = 3, rowNames = NULL, 
+    colNames = c("chr", "position", "count"), type = "integer", 
+    separated = FALSE), .Names = c("sharedType", "filename", 
+"totalRows", "totalCols", "rowOffset", "colOffset", "nrow", "ncol", 
+"rowNames", "colNames", "type", "separated"))
+)

@@ -96,12 +96,12 @@ my @InLists = <F>;
 close F;
 
 #open OUT,"> $opts{o}" or die;
-foreach my $j(@InLists){
+foreach my $j (@InLists){
     chomp ($j);
+    $j =~ s/\n|\r//;
     my ($ca_id, $ca_chr, $ca_begin_pos, $ca_end_pos, $ca_str) = (split /\t/, $j)[0,1,3,4,5];
     my $ca_length = $ca_end_pos - $ca_begin_pos + 1;
 #   my ($ca_id,$ca_str,$ca_begin_pos,$ca_max_cov,$ca_end_pos,$ca_length) = $j=~/(^\w+)\t([+,-])\t(\d+)\:.*\t\w+\:(.*)\t(\d+)\:.*\t(\d+)/; # Rv0001 + 1:Cov Max:1000 1524:Cov 1524
-
     my $ca_info = join"\t",($ca_id, $ca_chr, $ca_length, $ca_begin_pos, $ca_end_pos, $ca_str);
 # Search the neighbor genes.
     my ($pre_gene, $next_gene) = ('Start','End');
@@ -199,7 +199,7 @@ foreach my $j(@InLists){
         }
     }
     my $out = join"\t",($pre_gene, $gap_1, $next_gene, $gap_2, $direction, $des);
-    print $ca_info,"\t",$out,"\n";
+    print $ca_info . "\t" . $out . "\n";
 }
 
 ### Subroutines ###

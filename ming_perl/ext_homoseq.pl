@@ -22,40 +22,51 @@ extract_homoseq_blast();
 exit(1);
 
 sub extract_homoseq_blast {
-    my %opts = (n => 'id');
-    getopts("d:n:o:f:", \%opts);
+    my %opts = (t => 'NC_000962', n => 1);
+    getopts("d:t:n:o:f:", \%opts);
     usage() if(@ARGV != 1);
     die("[-d] Need input db file\n") if(! defined $opts{d});
     die("[-n $opts{n}] unknown -n\n") if(! $opts{n} =~ /^(id)|(name)$/);
     die("[-o] Need input output dir\n") if(! defined $opts{o});
     make_path($opts{o}) if(! -d $opts{o});
     my $query = shift(@ARGV);
-    my $df = read_fa($opts{d});
-    my $di = check_db_id($opts{d});
-    my %db_fa = %$df;
-    my %db_id = %$di;
-# NC_123456, NC_123456.1, gi|123456|ref|NC_123456.1|, abcd efg chromosome, gi|...chromosome
-    my $out_id = 0;
-    $out_id    = 3 if($opts{n} eq 'name');
+    my %db_fa = %{ read_fa($opts{d}) };
+    my %db_id = %{ check_db_id($opts{d}) };
+# 0=NC_123456, 1=NC_123456.1, 2=gi|12344678|ref|NC_123456.1|, 3=gi|....chromosome
+    my %id_type = (1 => 0, 2 => 2, 3 => 3 );
+    if(! exists $id_type{$opts{n}}) {
+        die("[$opts{n}] unknown type, 1, 2 or 3\n");
+    }
+    my $id_fmt = $id_type{$opts{n}};
 # run blast
-    my $best_hit = run_blast($query, $opts{d});
-    my %bt = %$best_hit;
+    my %best_hit = %{ run_blast($query, $opts{d}) };
     my $hit_info = '';
-    for my $b (sort keys %bt) {
-        my $q_file = catfile($opts{o}, $b . '.fa');
-        open my $fh_q, "> $q_file" or die "Cannot open $q_file, $!\n";
-        for my $t (sort keys %{$bt{$b}}) {
-            die("[$t] not found in: $opts{d}\n") if(! exists $db_fa{$t});
-            die("[$t] not found id: $opts{d}\n") if(! exists $db_id{$t});
-            my ($start, $end) = (split /\t/, $bt{$b}->{$t})[8, 9];
-            my $t_fa = pos2fa($start, $end, $db_fa{$t});
-            my $t_id = $db_id{$t}[$out_id];
-            print $fh_q join("\n", ">".$t_id, $t_fa)."\n";
+    for my $q (sort keys %best_hit) { # query
+        my %q_fa = ();
+        for my $s (sort keys %{$best_hit{$q}}) {
+            die("[$s] not found in: $opts{d}\n") if(! exists $db_fa{$s});
+            die("[$s] not found id: $opts{d}\n") if(! exists $db_id{$s});
+            my ($start, $end) = (split /\t/, $best_hit{$q}->{$s})[8, 9];
+            my $s_fa = pos2fa($start, $end, $db_fa{$s});
+            my $s_id = $db_id{$s}[$id_fmt];
+            $q_fa{$s_id} = $s_fa;
             my $strand = '+';
             my ($bg, $ed) = ($start < $end)?($start, $end):($end, $start);
             my $length = $ed - $bg + 1;
-            $hit_info .= $bt{$b}->{$t} . "\n";           
+            $hit_info .= $best_hit{$q}->{$s} . "\n";
 #$hit_info .= join("\t", $b, $t_id, $length, $bg, $ed, $strand). "\n";
+        }
+        ### chagnge the output format
+        my $q_file = catfile($opts{o}, $q . '.fa');
+        open my $fh_q, "> $q_file" or die "Cannot open $q_file, $!\n";
+        if(exists $q_fa{$opts{t}}) {
+            print $fh_q join("\n", '>'.$opts{t}, $q_fa{$opts{t}} ). "\n";
+            delete $q_fa{$opts{t}};
+            for my $f (keys %q_fa) {
+                print $fh_q join("\n", '>'.$f, $q_fa{$f}). "\n";
+            }
+        }else{
+            die "[$q] target ref: $opts{t} not found, check (-n, -t)\n";
         }
         close $fh_q;
     }
@@ -65,11 +76,11 @@ sub extract_homoseq_blast {
         print $fh_f $hit_info;
         close $fh_f;
     }
-    print "Finish: ouput [" . scalar(keys %bt) . '] files in [' . $opts{o} . "].\n";
+    print "Finish: ouput [" . scalar(keys %best_hit) . '] files in [' . $opts{o} . "].\n";
 }
 
 sub check_db_id {
-    my $in    = shift(@_);
+    my $in    = $_[0];
     my %db_id = ();
     open my $fh_in, "< $in" or die "Cannot open $in, $!\n";
     while (<$fh_in>) {
@@ -78,9 +89,9 @@ sub check_db_id {
 # >gi|121635883|ref|NC_008769.1| Mycobacterium bovis BCG str. Pasteur 1173P2 chromosome, complete genome
         die("[$in] id is not standard NCBI format: $_\n") unless(/\>gi\|\d+\|\w+\|\w+\.\d+\|\s\w+/);
         $_ =~ s/\>//;
-        my ($gi, $name) = split /\s/, $_, 2;
-        my $nc_id    = (split /\|/, $gi)[3];
-        my ($nc_id2) = $nc_id =~ /(\w+)\.\d+/;
+        my ($gi, $name) = split /\s/, $_, 2;     
+        my $nc_id       = (split /\|/, $gi)[3];  # NC_000962.3
+        my ($nc_id2)    = $nc_id =~ /(\w+)\.\d+/; # NC_000962
         $name = s/\s/\_/;
         @{$db_id{$gi}} = ($nc_id2, $nc_id, $gi, $name, $_);
     }
@@ -184,8 +195,9 @@ Usage: ext_homoseq.pl [options] <input.fa>
 
 Options: -o <STR>   : Dir for output fasta seq
          -d <STR>   : Input a database file, in FASTA format
-         -n <STR>   : How to name the new sequences?
-                      id=NC_123456, name=M_tub_H37Rv [default: id]
+         -n <INT>   : How to name the new sequences?
+                      1=NC_123456, 2='gi|123456|ref|NC_123456.1|', 3='gi|123456|ref|NC_123456.1| Strain name'
+         -t <STR>   : the name of target genome, have to be consistent with (-n); default [NC_000962]
          -f <STR>   : (optional), filename, write the position in in db
 
 Example:
@@ -193,3 +205,17 @@ ext_homoseq.pl -o subseq -d db.fa -n id input.fa
 \n");
 }
 
+### 
+__END__
+
+Change log:
+
+1. 2015-08-01
+    Create this script
+
+2. 2015-09-10
+    Add a parameter: -t, move the target genome to the first place
+
+
+
+### END OF FILE ###

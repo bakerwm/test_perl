@@ -22,7 +22,7 @@ my $chrom;
 
 parse_para();
 find_features();
-exit(1);
+#exit(1);
 
 sub parse_para{
     my %opts = ();

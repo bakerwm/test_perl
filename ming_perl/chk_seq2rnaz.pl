@@ -59,8 +59,7 @@ my %prog    = (RNAz   => \&runRNAz,
 die("Unkown command [$command]\n") if(!defined($prog{$command}));
 
 &{$prog{$command}};
-
-exit(0);
+#exit(0);
 
 ###
 sub checkModules {
@@ -226,7 +225,7 @@ sub parse_blast{ # extract one best hit for each genome
             # Create new strain name;
             my ($strain) = $s_description =~ /\w+\s\w+\s(\w+)/;
 #            $strain = 'Msmeg' if ($strain eq 'str');
-            my $s_ID = $strain.'_'.$q_name;
+            my $s_ID = $strain.'_'.$q_name; # the strain name need to be trimed
             ## output fasta files
             $seq_count{$q_name} ++;
             my $seq_fa = catfile($seq_dir, "$q_name\.fa"); # multiple seqs
@@ -313,8 +312,10 @@ sub wrap_rnazout {
         chomp;
         s/^\>//;
         next if (/^\s*$/); # skip blank lines
-        my ($id) = (split /\t/)[0];
-        push @{$hit{$id}}, $_;
+        my @tabs = split /\t/;
+        my $id   = shift(@tabs);
+        $id = (split /\_/, $id, 2)[1]; # trim the prefix of IDs, eg: KZN_ncRv0001 => ncRv0001
+        push @{$hit{$id}}, join("\t", $id, @tabs);
     }
     close $fh_in;
     my $out = '';
@@ -418,15 +419,23 @@ Command: RNAz       Perform RNAz analysis for the input seqeuence
 \n/);
 }
 
-# change log
-# 1. skip the blank lines in RNAz output
-# 2. skip the short seq (<10 nt) in input fa, and error fasta files
-# 3. correct the reverse strand seq.
-# 4. add the step: check required Perl modules and perl scripts
-# 5. add a demo, 3 (2 RNAs and 1 random seq) seqs of H37Rv to test the program
-# 6. wrap the RNAz output (bed), skip blank lines.
-# 7. for input seq that contain multiple regions with RNAz score > 0.5, it will 
-#    show only the largest RNAz score. 
-#
-# 2015-07-09
-#    1. add "-INFILE=in.fa" to clustalw2 program. (not recognize the input type)
+__END__
+
+Change log
+1. skip the blank lines in RNAz report
+2. skip the short seq (<10 nt) in input fa, and error fasta files
+3. correct the reverse strand seq.
+4. add the step: check required Perl modules and perl scripts
+5. add a demo, 3 (2 RNAs and 1 random seq) seqs of H37Rv to test the program
+6. wrap the RNAz output (bed), skip blank lines.
+7. only report the region with the largest RNAz score, if multiple
+   regions of the input fa match the criteria: RNAz score > 0.5.
+
+2015-07-09
+   1. add "-INFILE=in.fa" for clustalw2 program. (error: not recognize the input type)
+
+2015-08-08
+   1. trim the prefix (strain name) in the output of RNAz.
+   eg: KZN_Rv0001 => Rv0001
+
+
