@@ -51,6 +51,7 @@ sub sort2bed {
         open $fh_out, "> $opts{o}" or die "Cannot write to $opts{o}, $!\n";
     }
     $chr = (defined $chr)?$chr:0;
+    my $ref_fa = read_fasta($ref) if( defined $ref );
     while(<>) {
         chomp;
         next if(/^\#|^\s*$/);
@@ -59,7 +60,7 @@ sub sort2bed {
         if($fmt_in ne $from) {
             die("[-a $from] format error, is it <$fmt_in>?\n$_\n");
         }
-        my $out = fmt_convert($_, $from, $to, $feature_type, $ref, $chr, $extra);
+        my $out = fmt_convert($_, $from, $to, $feature_type, $ref, $chr, $extra, $ref_fa);
         next if(! $out);
         print $fh_out $out . "\n";
     }
@@ -88,7 +89,7 @@ sub guess_fmt {
             $fmt = 'bed';
         }elsif($in =~ /^\d+\.\.\d+\t/) {
             $fmt = 'ptt';        
-        }elsif($in =~ /\t\d+\t\d+\t.\t[+-]\t.\t/) {
+        }elsif($in =~ /\t\d+\t\d+\t(\d+?\.?\d+?)\t[+-]\t.\t/) {
             $fmt = 'gff';
         }elsif($in =~ /\d+\.(\d+\t){7}/) {
             $fmt = 'blast8';
@@ -112,6 +113,7 @@ sub fmt_convert {
     my $ref  = $_[4];
     my $name = $_[5];
     my $k    = $_[6]; # control tail
+    my $ref_fa = $_[7];
     my $in;
     my $out;
     ###
@@ -140,7 +142,7 @@ sub fmt_convert {
         $out = write_ptt($in, $k);
     }elsif($to =~ /^fa$/) {
         die("[-f] Need input reference file, fasta\n") if(! defined $ref);
-        $out = write_fa($in, $ref, $k);
+        $out = write_fa($in, $ref_fa, $k);
     }else {
         die("[-b $to] unknown format\n");
     }
@@ -359,13 +361,12 @@ sub write_sort {
 }
 
 sub write_fa {
-    my $in  = $_[0];
-    my $ref = $_[1];
-    my $k   = $_[2];
-    my $out = '';
+    my $in     = $_[0];
+    my $ref_fa = $_[1];
+    my $k      = $_[2];
+    my $out    = '';
     if($in) {
         my ($id, $chr, $length, $start, $end, $strand, $tail) = split /\t/, $in,7;
-        my $ref_fa = read_fasta($ref);
         my $fa = txt_to_seq($ref_fa, $start ,$end, $strand);
         $out = '>' . $id . "\n" . $fa;
     }

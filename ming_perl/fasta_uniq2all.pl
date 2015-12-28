@@ -2,28 +2,45 @@
 use warnings;
 use strict;
 
+#Description
+#
+#This script is designed to convert unique fasta file to total.
 
-my $in = shift or die "Need input unique.fa" ;
+sub usage {
+    die("Usage: fasta_uniq2all.pl <in.fa>\n");
+}
 
-my $out = $in; $out =~ s/\.fa/.all.fa/;
-unlink $out if -e $out;
+usage() if(@ARGV == 0 && -t STDIN);
 
-open F, $in or die;
-open OUT, ">>$out" or die;
-
-my $k = 0;
-while(<F>){
-    next unless(/^\>/);
-    my ($id, $count) = /\>(\w+)\s+(\d+)/;
-    chomp(my $seq = <F>);
-    for(my $i=1;$i<=$count;$i++){
-        my $tag = sprintf"%06d",$i;
-        my $new_id = $id."\_$tag";
-        print OUT ">$new_id\n$seq\n";
-        $k ++;
+my $header = "";
+my $new_id = "";
+my $sequence = "";
+while(<>) {
+    chomp;
+    if($_ =~ /^>(.+)/) {
+        if($header ne "") {
+             print ( rep_fa($header, $sequence));
+       }
+        $header   = $1;
+        $sequence = "";
+    }else {
+        $sequence .= $_;
     }
 }
-close F;
-close OUT;
 
-print "output reads: ", $k,"\n";
+print (rep_fa($header, $sequence));
+
+sub rep_fa {
+    my $header = $_[0];
+    my $seq    = $_[1];
+    my $new_seq = "";
+    my ($id, $num) = (split /\s+/, $header)[0, 1];
+    die("[$header] input fasta shoule be [>ID NUM] format\n") if( ! defined $num || ! $num =~ /%\d+$/);
+    for(my $i = 1; $i <= $num; $i ++) {
+        my $new_id = sprintf "$id\_%06d", $i;
+        $new_seq .= ">" . $new_id . "\n" . $seq . "\n";
+    }
+    return($new_seq);
+}
+
+### END OF FILE ###

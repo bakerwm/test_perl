@@ -13,7 +13,7 @@ use warnings;
 use Getopt::Std;
 
 utr_tag();
-exit(1);
+#exit(1);
 
 ###
 sub utr_tag {
