@@ -105,6 +105,9 @@ sub htseq_count {
     # run 
     my @runs      = ();
     chomp(my $chr = qx($func{'samtools'} view $bam | head -n1 | awk '{print \$3}'));
+    ### fix bug: chr name with '|'
+    $chr =~ s/\|/\\\|/g;
+    ###
     my $in_gff    = basename($in);
     $in_gff       =~ s/\.txt$/.gff/;
     $in_gff       = catfile($outdir, $in_gff);
@@ -117,7 +120,7 @@ sub htseq_count {
         push @runs, "sort -k1 $in_tmp | sed -e \'/^\_/d\' > $in_tmp2";
         # count tpm
         my $bam_mapped = qx($func{'samtools'} idxstats $bam | head -n1 |awk '{print \$3}');
-        my $ratio = sprintf"%.2f", 1000000/$bam_mapped;
+        my $ratio = sprintf"%.4f", 1000000/$bam_mapped;
         push @runs, "awk \'{printf(\"\%s\\t\%s\\t\%.4f\\n\", \$1, \$2, \$2*$ratio)}\'  \< $in_tmp2 | cut -f2-3 > $in_TPM";
     }
     return @runs;
@@ -138,6 +141,9 @@ sub featureCounts_count {
     }
     my @runs      = ();
     chomp(my $chr = qx($func{'samtools'} view $bam | head -n1 | awk '{print \$3}'));
+    ### fix bug: chr name with '|'
+    $chr =~ s/\|/\\\|/g;
+    ###
     my $in_gff    = basename($in);
     $in_gff       =~ s/\.txt$/.gff/;
     $in_gff       = catfile($outdir, $in_gff);
@@ -147,9 +153,11 @@ sub featureCounts_count {
 
     my $fc_para   = '';
     if($bam_name =~ /\_[1-9]+$/) {  # PE reads
-        $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
+       $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
+#        $fc_para  = join(" ", '-M --fraction --donotsort -f -T 5 -g gene_id -t exon -p -P -d 40 -D 500 -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);
     }else {
         $fc_para  = join(" ", '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);    
+#        $fc_para  = join(" ", '-M --fraction --donotsort -f -T 5 -g gene_id -t exon -s', $lib_type, '-a', $in_gff, '-o', $in_tmp);    
     }
 
     if( not_blank_file($in) ) {
@@ -182,6 +190,9 @@ sub bedtools_count {
     }
     my $chr    = qx($func{'samtools'} view $bam | head -n1 | awk '{print \$3}');
     chomp($chr);
+    ### fix bug: chr name with '|'
+    $chr =~ s/\|/\\\|/g;
+    ###
     my $in_bed = basename($in);
     $in_bed    =~ s/\.txt/.bed/;
     $in_bed    = catfile($outdir, $in_bed);
@@ -292,9 +303,4 @@ Changelog
 
 2015-08-08
   1.change TPM to 2-digits format
-
-
-
-
-
 

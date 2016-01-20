@@ -1,10 +1,18 @@
 #!/usr/bin/perl -w
 use strict;
 use warnings;
-
 use File::Path qw(make_path);
 use File::Spec::Functions qw(catfile);
 use Getopt::Std;
+
+###########################################################################
+# This script is designed to extract the following genomic features using #
+# standard NCBI genome annotation files: GFF, PTT, RNT                    #
+#                                                                         #
+# The following features will report in BED format:                       #
+# mRNA, asmRNA, tRNA, rRNA, IGR                                           #
+#                                                                         #
+###########################################################################
 
 my $fa;
 my $fa_list;
@@ -17,94 +25,65 @@ my $as;
 my $igr;
 my $rRNA;
 my $tRNA;
+my $mtrRNA;
 my $gene;
-my $chrom;
+my $chr_name;
 
 parse_para();
 find_features();
-#exit(1);
 
 sub parse_para{
     my %opts = ();
     getopts("a:n:", \%opts);
-#    my $usage = "Usage: $0 [-a] <ref.fa> [-n] <ref.name> out.dir\n";
-#    die("$usage") if(@ARGV != 1);
     usage() if(@ARGV != 1);
-    die("[-a] need ref fa\n") unless defined $opts{a};
+    $out_path = $ARGV[0];
+    make_path($out_path) if( ! -d $out_path);
+    die("[-a] reference file required\n") if( ! defined $opts{a} );
     my $fa_name = $fa = $opts{a};
     $fa_name =~ s/\.f[n]*a//;
     $gff = $fa_name . '.gff';
     $ptt = $fa_name . '.ptt';
     $rnt = $fa_name . '.rnt';
-    foreach my $f ($fa, $gff, $ptt, $rnt){
-        die("[$f] file not found") unless -e $f;
+    foreach my $f ("gff", "ptt", "rnt"){
+        my $ff = $fa_name . "." . $f;
+        die("[$f] file not found") if( ! -e $ff);
     }
-    $out_path = shift(@ARGV);
-    make_path("$out_path") unless -d $out_path;    
     $mRNA = catfile($out_path, "mRNA.bed");
-    $as   = catfile($out_path, "AS.bed");
+    $as   = catfile($out_path, "asmRNA.bed");
     $igr  = catfile($out_path, "IGR.bed");
     $tRNA = catfile($out_path, "tRNA.bed");
     $rRNA = catfile($out_path, "rRNA.bed");
+    $mtrRNA = catfile($out_path, "mtrRNA.bed");
     $gene = catfile($out_path, "gene.bed");
+    ### parse reference file
     $fa_list = catfile($out_path, "ref.txt");
-    
-    my ($header, $length) = read_fa();
-    $chrom = $header;
-    $chrom = $opts{n} if defined $opts{n};
-    open my $fh_list, "> $fa_list" or die "$!";
-    print $fh_list $chrom . "\t". $length . "\n";
+    my $chr_length = 0;
+    ($chr_name, $chr_length) = read_fa();
+    $chr_name = $opts{n} if defined $opts{n};
+    open my $fh_list, "> $fa_list" or die "Cannot write to fa_list file, $fa_list, $!\n";
+    print $fh_list $chr_name . "\t". $chr_length . "\n";
     close $fh_list;
 }
 
 sub find_features{
     open my $fh_mRNA, "> $mRNA" or die "$!";
-    open my $fh_as, "> $as" or die "$!";
-    open my $fh_igr, "> $igr" or die "$!";
+    open my $fh_as,   "> $as"   or die "$!";
+    open my $fh_igr,  "> $igr"  or die "$!";
     open my $fh_tRNA, "> $tRNA" or die "$!";
     open my $fh_rRNA, "> $rRNA" or die "$!";
-    open my $fh_gene, "> $gene" or die "$!";
     # mRNA & AS
     my %p = read_ptt();
     foreach my $i (keys %p){
         my ($chr, $length, $start, $end, $strand, $name) = split /\t/,$p{$i};
         $start--; # bed file 0-left most
         $end--;
-        print $fh_mRNA join("\t", ($chrom, $start, $end, $name, $length, $strand)), "\n";
+        print $fh_mRNA join("\t", ($chr_name, $start, $end, $name, $length, $strand)), "\n";
         my $as_str = ($strand eq '+')?'-':'+';
-        print $fh_as join("\t", ($chrom, $start, $end, "AS_".$name, $length, $as_str)), "\n";
+        print $fh_as join("\t", ($chr_name, $start, $end, "AS_".$name, $length, $as_str)), "\n";
     }
     close $fh_mRNA;
     close $fh_as;
-    # IGR
-    my %g = read_gff();
-    foreach my $n (keys %g){
-        my ($chr, $length, $start, $end, $strand, $name) = split /\t/, $g{$n};
-        $start --;
-        $end --;
-        print $fh_gene join("\t", ($chrom, $start, $end, $name, $length, $strand)), "\n";
-    }
-    close $fh_gene;
-    system "bedtools complement -i $gene -g $fa_list > tmp.bed";
-    # filter IGR file, and trim 1-base at both ends
-    system "cat tmp.bed | awk \'{\$2++; \$3--; if((\$3-\$2)>20) print \$1\"\\t\"\$2\"\\t\"\$3 }\' > tmp_trim.bed  ";
-    open my $fh_tmp, "< tmp_trim.bed" or die "$!";
-    my $counter = 1;
-    while(<$fh_tmp>){
-        chomp;
-        my ($chr, $start, $end) = split /\t/;
-        my $length = $end - $start;
-        my $id_p = sprintf"IGR%04d", $counter;
-        $counter ++;
-        my $id_n = sprintf"IGR%04d", $counter;
-        $counter ++;
-        print $fh_igr join("\t", ($chrom, $start, $end, $id_p, $length, '+')), "\n";
-        print $fh_igr join("\t", ($chrom, $start, $end, $id_n, $length, '-')), "\n";
-    }
-    close $fh_tmp;
-    close $fh_igr;
-    unlink("tmp.bed", "tmp_trim.bed", $gene);
-    # rRNA & tRNa
+    # rRNA & tRNA
     my %t = read_rnt();
     foreach my $m (keys %t){
         if($m =~ /tRNA|Anticodon/){
@@ -116,27 +95,56 @@ sub find_features{
     }
     close $fh_tRNA;
     close $fh_rRNA;
+    # IGR
+    extract_igr();
+}
+
+sub extract_igr {
+    my $igr_tmp = catfile($out_path, "igr_tmp.txt");
+    system("cat $mRNA $tRNA $rRNA | sort -k1,1 -k2,2n > $mtrRNA");
+    system("bedtools complement -i $mtrRNA -g $fa_list > $igr_tmp");
+    open my $fh_tmp, "< $igr_tmp" or die "Cannot open $igr_tmp, $!\n";
+    open my $fh_igr, "> $igr" or die "Cannot open $igr, $!\n";
+    my $counter = 0;
+    while(<$fh_tmp>) {
+        chomp;
+        my ($chr, $start, $end) = split /\t/, $_;
+        $start ++;
+        $end --;
+        my $igr_length = $end - $start + 1;
+        next if($igr_length < 20); ### skip the IGRs short than 20 bp
+        my $id_p = sprintf"IGR%04d", 2 * $counter;
+        my $id_n = sprintf"IGR%04d", 2 * $counter + 1;
+        print $fh_igr join("\t", $chr, $start, $end, $id_p, $igr_length, "+") . "\n";
+        print $fh_igr join("\t", $chr, $start, $end, $id_n, $igr_length, "-") . "\n";
+        $counter ++;
+    }
+    close $fh_tmp;
+    close $fh_igr;
+    unlink($igr_tmp) if( -e $igr_tmp );
+    unlink($mtrRNA) if( -e $mtrRNA );
 }
 
 sub read_fa{
-    my $length;
+    my $chr_name;
+    my $chr_length;
     my $header;
     open my $fh_fa, "< $fa" or die "$!";
     while(<$fh_fa>){
         chomp;
         if(/^\>/){
             $_ =~ s/^\>//;
-            $header = (split /\s/, $_)[0];
+            $header = $_;
         }else{
-            $length += length($_); 
+            $chr_length += length($_); 
         }
     }
     close $fh_fa;
-    return ($header, $length);
-#    $chrom = $opts{n} if defined $otps{n};
-#    open my $fh_list, "> $fa_list" or die "$!";
-#    print $fh_list join("\t", ($chrom, $length)), "\n";
-#    close $fh_list;
+    $chr_name = (split /\s+/, $header)[0];
+    if($header =~ /\|/) {
+        $chr_name = (split /\|/, $header)[3];
+    }
+    return ($chr_name, $chr_length);
 }
 
 sub read_gff{
@@ -184,8 +192,8 @@ sub read_ptt{
         my ($pos, $strand, $name) = (split /\t/, $p)[0,1,5];
         my ($start, $end) = (split /\.+/, $pos)[0,1];
         my $length = $end - $start + 1;
-        my $id = join("\:", ($chrom, $start, $end, $strand));
-        $out{$id} = join "\t", ($chrom, $length, $start, $end, $strand, $name);
+        my $id = join("\:", ($chr_name, $start, $end, $strand));
+        $out{$id} = join "\t", ($chr_name, $length, $start, $end, $strand, $name);
         $count ++;
     }
     close $fh_ptt;
@@ -205,7 +213,7 @@ sub read_rnt{
         my $length = $end - $start + 1;
         $start --;
         $end --;
-        my $line = join("\t", ($chrom, $start, $end, $name, $length, $strand));
+        my $line = join("\t", ($chr_name, $start, $end, $name, $length, $strand));
         my $id = $name . ':' . $type;
         $out{$id} = $line;
         $count ++;

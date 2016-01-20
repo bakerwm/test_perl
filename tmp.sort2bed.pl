@@ -83,13 +83,14 @@ sub guess_fmt {
     my $fmt = '';
     my @tabs = split /\t/, $in;
     if(@tabs >= 6) {
-        if($in =~ /\t\d+\t\d+\t[+-]/) {
+        if($in =~ /^.*\t.*\t\d+\t\d+\t\d+\t(\+|\-)/) {
             $fmt = 'sort';
-        }elsif($in =~ /\t\d+\t\d+\t.*\t\d+\t[+-]/) {
+        }elsif($in =~ /^.*\t\d+\t\d+\t.*\t\d+\t(\+|\-)/) {
+#        }elsif($in =~ /\t\d+\t\d+\t.*\t\d+\t[+-]/) {
             $fmt = 'bed';
         }elsif($in =~ /^\d+\.\.\d+\t/) {
             $fmt = 'ptt';        
-        }elsif($in =~ /\t\d+\t\d+\t(\d+?\.?\d+?)\t[+-]\t.\t/) {
+        }elsif($in =~ /\t\d+\t\d+\t(\d+?\.?\d+?)\t(\+|\-)\t.\t/) {
             $fmt = 'gff';
         }elsif($in =~ /\d+\.(\d+\t){7}/) {
             $fmt = 'blast8';

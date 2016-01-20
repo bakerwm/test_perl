@@ -54,7 +54,6 @@ sub stat_feature_mapping {
     print join("\n", @stats) . "\n";
 }
 
-
 sub prep_feature {
     my $ref    = $_[0];
     my $outdir = $_[1];
@@ -148,7 +147,7 @@ sub featureCounts_count {
     }else {
         $para = join(' ', '-M --fraction --donotsort -O -f -T 5 -g gene_id -t exon -s 1 -a', $file, '-o', $fcount);
     }
-    my $run = join(' ', 'featureCounts', $para, $bam, "> $flog 2>&1");
+    my $run = join(' ', 'featureCounts', $para, $bam, ">> $flog 2>&1");
     system"$run";
     my $summary = $fcount . '.summary';
     open my $fh_sum, "< $summary" or die "Cannot open $summary, $!\n";
@@ -170,6 +169,9 @@ Usage: stat_feature_mapping.pl [options]
 Options: -b  <STR>          : the directory of BAM files
          -f  <STR>          : reference file (*.fna), 
                               need *.gff, *.ptt, *.rnt in the same dir
+
+Example:
+perl $0 -b alignment -f ref.fna out_dir
 \n");
 }
 

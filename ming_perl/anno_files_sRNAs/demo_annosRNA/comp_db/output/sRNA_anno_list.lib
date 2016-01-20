@@ -1,0 +1,6 @@
+# Add information from the following files to db_file
+01	/share/wangming/work/Identify_sRNA/demo_H37Rv/00.artefact_asRNA/3.Other_methods/Kroger_2013/bam_tags_scale0/demo_annosRNA/comp_db/input/01_EEP_bac.merged.pos_sRNA.txt
+
+# File: *[type].txt          : The ids from the tags files
+# File: *[type].stat         : Convert the ids to 1 or 0 based on the ids, hit = 1, not_hit('-') = 0
+# File: *[tyep].53ends.txt   : Check the distance of 5'/3' of the tags to the db. each file will output 3-column: overlap:5_distance:3_distance

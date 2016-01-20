@@ -43,6 +43,7 @@ my %func = ("samtools"                => '',
             "chk_find_tags.pl"        => '',
             "search_cov_regions.pl"   => '', ## del
             "sort_to_position_sig.pl" => '',
+            "update_table.pl"         => '',
             "sort2candi.pl"           => '',
             "chk_seq2rnaz.pl"         => ''
             );
@@ -246,20 +247,7 @@ sub bam_to_bedgraph {
 ##############################
 # BEGIN - 3. BAM -> tags     #
 ##############################
-sub BAM2tags {
-    my %opts = (o => 'bam_tags',
-                n => 'bac',
-                b => 'auto',
-                s => 1,
-                r => 0,
-                l => 0,
-                t => 'auto',
-                c => 100, 
-                m => 1,
-                e => 1, 
-                z => 1,
-                d => '/home/wangming/work/database/H37Rv/SixRv.fa');
-    getopts("o:f:g:n:b:s:c:r:l:t:c:m:e:z:d:", \%opts);
+sub usage_bam2tags {
     die(qq/
 Usage: parseBAM.pl tags [options] <bam_list>
 
@@ -270,10 +258,10 @@ Options: -o <STR>       output dir, [bam_tags]
          -g <STR>       annotation file, mtrRNA [gff]
          -n <STR>       the name of the sample [bac]
     
-    Type of the libraries:
+Type of the libraries:
          -b <STR>       libtype for each bam files. [auto]
-                        auto='all libs contain >40 nt sRNA'
-                        FILE='<BAM_name> <Lib_range> <Filt_range>', 
+                        auto="all libs contain >40 nt sRNA"
+                        FILE="<BAM_name> <Lib_range> <Filt_range>", 
                         eg: [extent 40 nt at both ends, have to > 40 nt]
                         H37Rv01.f.s.bam 18-40  40-80
                         H37Rv02.f.s.bam 40-80  40-120
@@ -284,23 +272,45 @@ Options: -o <STR>       output dir, [bam_tags]
                         1: do not normalize the mapped reads
          -r <INT>       force to calculate fwd\/rev.bam? 0=no, 1=yes, [0]
          -l <INT>       force to calculate fwd\/rev.coverage? 0=no, 1=yes, [0]
-         -t <STR>       bam_stat.out or 'auto', [auto]
+         -t <STR>       bam_stat.out or "auto", [auto]
          -c <INT>       cut-off for determine edges of tags [100]
     
-    Control output:
+Control output:
          -m <INT>       merge tags from all samples, 0=no, 1=yes, [1]
          -e <INT>       count reads on each tag by htseq-count. very slow. 0=no, 1=yes, [1]
          -z <INT>       apply RNAz analysis, 0=no, 1=yes, [1]
-                        Only report one region with the highest z-score ifM_name> <Lib_range> <Filt_range>',
+                        Only report one region with the highest z-score ifM_name> <Lib_range> <Filt_range>,
                               272                         eg: [extent 40 nt at both ends, have to > 40 nt]
                         the input sequence contain multiple regions with 
                         z-score > 0.5. (criteria)
-                        -d <STR>       The database for RNAz analysis. [SixRv]
+         -d <STR>       The database for RNAz analysis. [SixRv]
                         see: ~\/work\/database\/H37Rv\/SixRv.fa
 
-                        Example:
-                        parseBAM.pl tags -o out_dir -f ref.fa -g ref.gff inbam.list > log
-                        \n/) if(@ARGV == 0);
+Example:
+parseBAM.pl tags -o out_dir -f ref.fa -g ref.gff inbam.list > log
+\n/); 
+}
+
+sub usage_bam2tags_short {
+    die(qq/
+Usage: parseBAM.pl tags -o out_dir -f ref.fa -g ref.gff inbam.list > log
+\n/);
+}
+
+sub BAM2tags {
+    my %opts = (o => "bam_tags",
+                n => "bac",
+                b => "auto",
+                s => 1,
+                r => 0,
+                l => 0,
+                t => "auto",
+                c => 100, 
+                m => 1,
+                e => 1, 
+                z => 1,
+                d => "/home/wangming/work/database/H37Rv/SixRv.fa");
+    getopts("o:f:g:n:b:s:c:r:l:t:c:m:e:z:d:", \%opts);
     die("[-f] reference fasta required\n") if( ! defined $opts{f} );
     die("[-g] gff file required\n") if( ! defined $opts{g} );
     die("[-f $opts{f}] reference file not exist\n") if(! -e $opts{f});
@@ -315,37 +325,39 @@ Options: -o <STR>       output dir, [bam_tags]
     my $libtype     = $opts{b};
     my $scale       = $opts{s};
     my $calbam      = $opts{r}; # force to calculate fwd/rev.bam
-    my $bamstat     = $opts{t}; # the bam_stat.out file, or 'auto'
+    my $bamstat     = $opts{t}; # the bam_stat.out file, or "auto"
     my $calcov      = $opts{l}; # force to calculate fwd/rev.coverage
+    my $choose_cutoff = 100;
 #    my $cutoff      = $opts{c}; # cutoff for scan tags
     my $merge       = $opts{m};
     my $exp         = $opts{e};
     my $rnaz        = $opts{z};
     my $rnazdb      = abs_path($opts{d});
 
-    my $ref_idx           = $ref . '.fai';
+    my $ref_idx           = $ref . ".fai";
     my $chr_name          = fetch_chrname($ref); # fetch the chrname from fasta file
-    my $tag_log_out       = '3.bam_tags.log';
-    my $bam_subdirname    = 'bam_subdir';
-    my $bam_stat_dirname  = 'bam_stat';
-    my $bam_stat_filename = 'bam_stat.out';
-    my $bam_coverage_dirname  = 'bam_coverage';
-    my $bam_coverage_libname  = 'bam_coverage.lib';
-    my $tag_scan_dirname      = 'scan_cutoff';
+    my $tag_log_out       = "3.bam_tags.log";
+    my $bam_subdirname    = "bam_subdir";
+    my $bam_stat_dirname  = "bam_stat";
+    my $bam_stat_filename = "bam_stat.out";
+    my $bam_coverage_dirname  = "bam_coverage";
+    my $bam_coverage_libname  = "bam_coverage.lib";
+    my $tag_scan_dirname      = "scan_cutoff";
 
-### Prepare working directory
+    ### Prepare working directory
     my @bam_lists  = @{ parse_bam_list($bam_list) };
-    my $log_dir    = catdir(dirname($out_dir), 'logs');
+    my $log_dir    = catdir(dirname($out_dir), "logs");
     my $log_out    = catfile($log_dir, $tag_log_out);
     my $bam_subdir = catdir(dirname($out_dir), $bam_subdirname);
     my $bam_coverage_dir = catdir(dirname($out_dir), $bam_coverage_dirname);
     make_path($out_dir) if( ! -d $out_dir);
     make_path($log_dir) if( ! -d $log_dir);
     make_path($bam_coverage_dir) if( ! -d $bam_coverage_dir);
-### Prepare ref.fasta index    
+
+    ### Prepare ref.fasta index    
     system"$func{'samtools'} faidx $opts{f} ";
 
-### Parse the libtype for each bam file
+    ### Parse the libtype for each bam file
     my %filt_cr = %{ parse_libtype(\@bam_lists, $libtype, $out_dir) };
 
     ### Checking bam_stat file,
@@ -371,15 +383,16 @@ Options: -o <STR>       output dir, [bam_tags]
 
     ### Checking the coverage folder,
     ### save the fwd/rev.coverage files to the directory
-    my @runs_cov = @{  check_bam_coverage($bam_coverage_dir, \@bam_lists, $ref_idx, $scale, $bam_coverage_dir, $bam_coverage_libname, \%bam_mapped, $calcov) };
+    my @runs_cov = @{ check_bam_coverage($bam_coverage_dir, \@bam_lists, $ref_idx, $scale, $bam_coverage_dir, $bam_coverage_libname, \%bam_mapped, $calcov) };
     push @runs, @runs_cov;
+    exe_cmd("1", \@runs);
 
     ###############################
     # BEGIN - scan the cutoff     #
     ###############################
     ### cutoff = 100
-#    my @cutoff_lists = ('50', '100', '1000', '10000', '100000');
-    my @cutoff_lists = ('50', '100');
+    my @cutoff_lists = ('50', '100', '1000', '10000', '100000');
+#    my @cutoff_lists = ('50', '100');
 #    @runs = (); # clear up @runs
     for my $cutoff (sort {$a<=>$b} @cutoff_lists) {
         @runs = (); # clear up @runs
@@ -390,19 +403,60 @@ Options: -o <STR>       output dir, [bam_tags]
         make_path($tag_cutoff_dir) if( ! -d $tag_cutoff_dir );
         my ($run_tags, $tag_files)  = convert_bam2tag(\@bam_lists, $bam_subdir, $bam_coverage_dir, $tag_cutoff_dir, $cutoff);
         push @runs, @{$run_tags};
-        exe_cmd("0", \@runs);
+        exe_cmd("1", \@runs);
         ### merge/combine tags from different bam files
         # $tag_file, (ARRAY)
-        combine_tags(\@{ $tag_files}, $tag_cutoff_dir, $ref, $gff, \%filt_cr, $sample_name);
-###
+        combine_tags(\@{$tag_files}, $tag_cutoff_dir, $ref, $gff, \%filt_cr, $sample_name);
     }
     ###############################
     # END - scan cutoff           #
     ###############################
     
     ### wrap files from all cutoff_folders
+    ### basd on cutoff = 100
+    ### $out_dir/scan_cutoff/50-100000/output/
+    my $tag_type = "sRNA"; ### not used this para
+    @runs = ();
+    my ($run_update, $tag_update) = update_tags(\@cutoff_lists, $out_dir, $tag_type, $sample_name, $ref, $choose_cutoff);
+    push @runs, @{$run_update};
+    exe_cmd("1", \@runs);
+    
+    my @finish = ("echo \"### Finish $bam_list \"");
+    exe_cmd("1", \@finish);
+    ### Run exp/TPM
+#    my $tag_report_dir = catdir($out_dir, 'tag_exp');
+#    tag_to_count(\@bam_lists, $tag_update, );
+
+    ### Run RNAz
+#    my $tag_rnaz_dir = catdir($out_dir, 'tag_rnaz');
+
     
 }
+
+### count exp
+#sub tag_to_count {
+#    my @bam_lists  = @{ $_[0] };
+#    my $tag_file   = $_[1];
+#    my %bam_mapped = %{ $_[2] };
+#    my $ref        = $_[3];
+#
+#    my $chr_name = fetch_chrname($ref);
+#    for my $bam (sort @bam_lists) {
+#        my ($bam_name) = basename($bam) =~ /(^\w+)/;
+#        my $lib_type = "1";
+#        $lib_type    = "2" if($bam_name =~ /\_[12]$/); ### featureCounts, dUTP
+#        if( ! exists $bam_mapped{$bam_name} ) {
+#            my $total_reads = $bam_mapped{$bam_name};
+#            my $scale = sprintf"%.4f", 1000000/$total_reads;
+#
+#        }else {
+#            die("[$bam] not found, try [chk_parseBAM.pl stat bam.list] \n");
+#        }
+#
+#    
+#    }
+#
+#}
 
 ### check the file libtype
 sub parse_libtype {
@@ -412,13 +466,13 @@ sub parse_libtype {
     ###
     my %filt_cr = ();
     ###
-    if($libtype eq 'auto') {
-        my $libtype_file = catfile($out_dir, 'libtype.lib');
+    if($libtype eq "auto") {
+        my $libtype_file = catfile($out_dir, "libtype.lib");
         open my $fh_out, "> $libtype_file" or die "Cannot open file $libtype_file, $!\n";
         print $fh_out join("\t", "#<BAM_name>", "<Lib_range>", "<Filt_range>") . "\n";
         for my $bam (sort @bam_lists) {
             my ($bam_name) = basename($bam) =~ /(^\w+)/;
-            $filt_cr{$bam_name} = '40-100000'; # >40 nt
+            $filt_cr{$bam_name} = "40-100000"; # >40 nt
             print $fh_out join("\t", $bam, ">40", "40-100000") . "\n";
         }
         close $fh_out;
@@ -446,7 +500,7 @@ sub parse_libtype {
     push @demo_libs, "#H37Rv03.f.s.bam  80-140  40-180";
     push @demo_libs, "#H37Rv04.f.s.bam  >140    100-10000";
     push @demo_libs, "#";
-    my $demo_libtype = catfile($out_dir, 'libtype.demo');
+    my $demo_libtype = catfile($out_dir, "libtype.demo");
     open my $fh_out, "> $demo_libtype" or die "Cannot open file $demo_libtype, $!\n";
     print $fh_out join("\n", @demo_libs) . "\n";
     close $fh_out;
@@ -470,19 +524,19 @@ sub check_bam_coverage {
     ###
     my @runs = ();
     my @lib_lines = ();
-    push @lib_lines, 'Generate coverage files using bam files';
-    push @lib_lines, 'Input BAM files:';
+    push @lib_lines, "Generate coverage files using bam files";
+    push @lib_lines, "Input BAM files:";
     for my $bam (sort @bam_lists) {
         push @lib_lines, "\t" . $bam;
         my ($bam_name) = basename($bam) =~ /(^\w+)/;
-        my $bam_cov_fwd = catfile($bam_coverage_dir, $bam_name . '.fwd.coverage');
-        my $bam_cov_rev = catfile($bam_coverage_dir, $bam_name . '.rev.coverage');
+        my $bam_cov_fwd = catfile($bam_coverage_dir, $bam_name . ".fwd.coverage");
+        my $bam_cov_rev = catfile($bam_coverage_dir, $bam_name . ".rev.coverage");
         ### check file existence
-        next if( ! $calcov && -e $bam_cov_fwd && -e $bam_cov_rev);
+        next if( $calcov == 0 && -e $bam_cov_fwd && -e $bam_cov_rev);
         my @run_covs = @{ bam_to_coverage($bam, $ref_idx, $scale, $bam_coverage_dir, \%bam_mapped) };
         push @runs, @run_covs;
     }
-    push @lib_lines, 'Scale: 0=normaliza to 1 million total reads';
+    push @lib_lines, "Scale: 0=normaliza to 1 million total reads";
     push @lib_lines, "\t" . $scale;
     open my $fh_lib, "> $bam_coverage_lib" or die "Cannot write to lib: $bam_coverage_lib, $!\n";
     print $fh_lib join("\n", @lib_lines) . "\n";
@@ -509,11 +563,11 @@ sub bam_to_coverage {
     $scale = $sn if($scale == 0);
     ### 
     my ($bam_name) = basename($bam) =~ /(^\w+)\./;
-    my $bam_subdir = catdir(dirname($outdir), 'bam_subdir');
-    my $bam_fwd = catfile($bam_subdir, $bam_name . '.fwd.bam');
-    my $bam_rev = catfile($bam_subdir, $bam_name . '.rev.bam');
-    my $bg_fwd  = catfile($outdir, $bam_name . '.fwd.coverage');
-    my $bg_rev  = catfile($outdir, $bam_name . '.rev.coverage');
+    my $bam_subdir = catdir(dirname($outdir), "bam_subdir");
+    my $bam_fwd = catfile($bam_subdir, $bam_name . ".fwd.bam");
+    my $bam_rev = catfile($bam_subdir, $bam_name . ".rev.bam");
+    my $bg_fwd  = catfile($outdir, $bam_name . ".fwd.coverage");
+    my $bg_rev  = catfile($outdir, $bam_name . ".rev.coverage");
     my @runs = ();
     push @runs, "$func{bedtools} genomecov -d -split -scale $scale -ibam $bam_fwd -g $ref_idx > $bg_fwd";
     push @runs, "$func{bedtools} genomecov -d -split -scale $scale -ibam $bam_rev -g $ref_idx > $bg_rev";
@@ -567,26 +621,26 @@ sub combine_tags {
     push @runs, @{$cb_run};
 
     ### Rename the tags by BAM
-    my ($run_rename, $bed_renamed) = renametag($tag_bed, '1.tag_renamed');
+    my ($run_rename, $bed_renamed) = renametag($tag_bed, "1.tag_renamed");
     push @runs, @{ $run_rename };
     exe_cmd("1", \@runs);
 
     ### Filt the tags by criteria
     @runs = (); # clear the @runs, 
-    my @tag_filts = @{ filttag($bed_renamed, '2.tag_filted', \%filt_cr) };
-    push @runs, "echo '### filt_tags in PERL script' ";
+    my @tag_filts = @{ filttag($bed_renamed, "2.tag_filted", \%filt_cr) };
+    push @runs, "echo \'### filt_tags in PERL script\' ";
 
     ### Merge multiple bed files
-    my $bed_merged_dir  = catdir($tag_cutoffdir, '3.tag_merged');
+    my $bed_merged_dir  = catdir($tag_cutoffdir, "3.tag_merged");
     make_path($bed_merged_dir) if( ! -d $bed_merged_dir);
     my $bed_merged_file = catfile($bed_merged_dir, $sample_name . ".merged.bed");
-    my @run_merge       = @{ merge_bed_files(\@tag_filts, $bed_merged_file, $ref, $gff) }; # @{$bed_renamed}
+    my @run_merge       = @{ merge_bed_files(\@tag_filts, $bed_merged_file, $ref, $gff) }; # @{$bed_renamed} !!! watch out blank bed files
     push @runs, @run_merge;
     exe_cmd("1", \@runs);
 
     ### Output results
     ### choose the appropriate id
-    my $bed_output_dir  = catdir($tag_cutoffdir, 'output');
+    my $bed_output_dir  = catdir($tag_cutoffdir, "output");
     make_path($bed_output_dir) if( ! -d $bed_output_dir);
     report_merged_tags($bed_merged_dir, $bed_output_dir);
     
@@ -620,8 +674,9 @@ sub renametag {
         my $bed_rename_dir  = catdir(dirname($bed), $re_dirname);
         make_path($bed_rename_dir) if( ! -d $bed_rename_dir );
         my $bed_rename_file = catfile($bed_rename_dir, basename($bed));
-        push @runs, "sed -e \'s/Seed/Lib$flag\\Seed\_/\' $bed > $bed_rename_file";
+        push @runs, "sed -e \'s/Seed/Lib$flag\\_Seed/\' $bed > $bed_rename_file";
         push @beds_renames, $bed_rename_file;
+        $counter ++;
     }
     return(\@runs, \@beds_renames);
 }
@@ -659,11 +714,14 @@ sub select_tags {
     my $tag_out    = $_[1];
     my $range_low  = $_[2];
     my $range_high = $_[3];
-    my $tag_del    = $tag_out . '.del';
+    my $tag_del    = $tag_out . ".del";
     ### check input: BED format
-    unless( check_file_format($tag_in, 'bed') ) {
+    ### check file existence
+    if(not_blank_file($tag_in)) {
+    unless( check_file_format($tag_in, "bed") ) {
         die("[$tag_in] file not match BED format\n");
-    };
+    }
+    }
     ### filt tags
     open my $fh_in, "< $tag_in" or die "Cannot open file: $tag_in, $!\n";
     open my $fh_out, "> $tag_out" or die "Cannot open file: $tag_out, $!\n";
@@ -692,7 +750,7 @@ sub check_file_format {
     ### Readin a sample of the file: the first 10 lines.
     open my $fh_in, "< $file" or die "Cannot open file: $file, $!\n";
     my $counter = 1;
-    my $line    = '';
+    my $line    = "";
     while(<$fh_in>) {
         last if($counter > 10);
         next if(/^\#|^\s*$/);
@@ -702,37 +760,37 @@ sub check_file_format {
     close $fh_in;
     ###
     ### report yes or no
-    my $report = '0'; # default is no
-    my $guess_fmt = '';
+    my $report = "0"; # default is no
+    my $guess_fmt = "";
     ### guess the format first
     if(($line =~ s/\t/\t/g) >= 5 * ($counter - 1)) { ### tab separated file
         ### BED, SORT, GFF
         if(($line =~ /^.*\t.*\t\d+\t\d+\t\d+\t(\+|\-)/)) {
-            $guess_fmt = 'SORT';
+            $guess_fmt = "SORT";
         }elsif($line =~ /^.*\t\d+\t\d+\t.*\t\d+\t(\+|\-)/) {
-            $guess_fmt = 'BED';
+            $guess_fmt = "BED";
         }elsif($line =~ /\d+\t\d+\t.\t(\+|\-)\t.\t/) {
-            $guess_fmt = 'GFF';
+            $guess_fmt = "GFF";
         }else {
-            $guess_fmt = 'unknown';
+            $guess_fmt = "unknown";
         }        
     }elsif($line =~ /^\>/) {
         ### fasta file
-        $guess_fmt = 'FASTA';
-    }elsif($line eq '') {
+        $guess_fmt = "FASTA";
+    }elsif($line eq "") {
         ### blank file
-        $guess_fmt = 'BLANK';
+        $guess_fmt = "BLANK";
 
     }
     ###
 print $guess_fmt . "\n\n";
     if($guess_fmt eq $format) {
-        $report = '1';
+        $report = "1";
     }
     return ($report);
 }
 
-### merge the tags according to position
+### merge the tags according to position  !!! watch out blank bed files
 sub merge_bed_files {
     my @beds    = @{$_[0]};
     my $out_bed = $_[1];
@@ -744,7 +802,8 @@ sub merge_bed_files {
     $out_txt    =~ s/\.bed/.txt/;
     $out_pos    =~ s/\.bed/.pos.txt/;
     push @runs, join(" " , 'cat', @beds, "| sort -k 1,1 -k 2,2n | $func{'bedtools'} merge -s -d -1 -c 4,5,6 -o distinct,distinct,distinct -i - > $out_bed");
-    push @runs, "perl $func{'tmp.sort2bed.pl'} -a bed -b sort $out_bed > $out_txt";
+#    push @runs, "perl $func{'tmp.sort2bed.pl'} -a bed -b sort $out_bed > $out_txt"; !!! not normal bed files.
+    push @runs, "perl $func{'sort2bed.pl'} -t bed2sort -i $out_bed -o $out_txt";
     push @runs, "perl $func{'sort_to_position_sig.pl'} -f $ref -g $gff $out_txt > $out_pos";
     push @runs, "perl $func{'sort2candi.pl'} $out_pos";
     return(\@runs);
@@ -782,6 +841,59 @@ sub report_tag_id {
 ##############################
 # ---END--- merge tags       #
 ##############################
+
+### update tags from each cutoff value
+sub update_tags {
+    my @cutoff_lists = @{ $_[0] };
+    my $out_dir      = $_[1];
+    my $tag_type     = $_[2]; # not used this para
+    my $sample_name  = $_[3];
+    my $ref          = $_[4];
+    my $choose_cutoff = $_[5];
+    ### Parameters
+    my $chr_name        = fetch_chrname($ref);
+#    my $choose_cutoff   = 100;
+    my $update_dir      = catdir(catdir($out_dir, "scan_cutoff"), "update");
+    my $update_cmp_dir  = catdir($update_dir, "comp");
+    my $update_stay_dir = catdir($update_dir, "stay");
+    my $update_out_dir  = catdir($update_dir, "output");
+    make_path($update_cmp_dir) if( ! -d $update_cmp_dir);
+    make_path($update_stay_dir) if( ! -d $update_stay_dir);
+    make_path($update_out_dir) if( ! -d $update_out_dir);
+    ### based on 100
+    my $tag_filename    = $sample_name . ".merged.pos.txt";
+    my $tag_choose_dir  = catdir(catdir(catdir($out_dir, "scan_cutoff"), $choose_cutoff), "output");
+    my $tag_choose_file = catfile($tag_choose_dir, $tag_filename);
+    my $tag_choose_bed  = $tag_choose_file;
+    $tag_choose_bed     =~ s/.txt$/.bed/;
+    ### runs
+    my @runs = ();
+    push @runs, "perl $func{'tmp.sort2bed.pl'} -a sort -b bed -x 0 $tag_choose_file > $tag_choose_bed";
+    ### for each cutoff value
+    my @tag_extras = ();
+    for my $cutoff (sort {$a<=>$b} @cutoff_lists) {
+        next if($cutoff == $choose_cutoff);
+        my $tag_query_dir  = catdir(catdir(catdir($out_dir, "scan_cutoff"), $cutoff), "output");
+        my $tag_query_file = catfile($tag_query_dir, $tag_filename);
+        my $tag_query_bed  = $tag_query_file;
+        $tag_query_bed     =~ s/.txt$/.bed/;
+        ### output files
+        my $cmp_bed_filename = "cutoff_" . $choose_cutoff . "_vs_" . $cutoff . ".merged.pos.bed";
+        my $cmp_bed_file     = catfile($update_cmp_dir, $cmp_bed_filename);
+        my $out_bed_filename = "cutoff_" . $choose_cutoff . "_vs_" . $cutoff . ".merged.pos_" . $cutoff . "_stay.txt";
+        my $out_bed_file     = catfile($update_stay_dir, $out_bed_filename);
+        push @tag_extras, $out_bed_file;
+        ###
+        push @runs, "perl $func{'tmp.sort2bed.pl'} -a sort -b bed -x 0 $tag_query_file > $tag_query_bed";
+        push @runs, "$func{'bedtools'} intersect -s -wo -a $tag_choose_bed -b $tag_query_bed > $cmp_bed_file";
+        push @runs, "cat $tag_query_file | perl $func{'update_table.pl'} -line -hit 2 -d $cmp_bed_file -n 10 > $out_bed_file";
+    }
+    ###
+    my $tag_out_file = catfile($update_out_dir, $tag_filename);
+    push @runs, join(" ", "cat", $tag_choose_file, @tag_extras, ">", $tag_out_file);
+    push @runs, "perl $func{'sort2candi.pl'} $tag_out_file";
+    return(\@runs, $tag_out_file);
+}
 
 ### calculate TPM for each tags
 sub txt2count {
@@ -1080,27 +1192,31 @@ Command: stat   count mapping reads for each BAM
 
 # Structure of the output directory:
 # Output
-#   |-stat_bams
-#   |   |-bam.stat (output - 1)
+#   |-bam_stat
+#   |   |-bam_stat.out (output - 1)
 #   |
-#   |-view_bedgraph
-#   |   |-sample1
-#   |   |   |- *.fwd.bedgraph, *.rev.bedgraph, *.bam (output - 2)
-#   |   |
-#   |   |-sample2...
+#   |-bam_subdir
+#   |   |-*.fwd/rev.bam (bam files)
 #   |
-#   |-find_tags
-#   |   |-sample1
-#   |   |  |- sample1.tag.txt, *.tag.pos_sRNA.txt ....
-#   |   |
-#   |   |-sample2...
+#   |-bam_coverage
+#   |   |-*.fwd/rev.coverage
+#   |
+#   |-bam_view
+#   |   |- *.fwd.bedgraph, *.rev.bedgraph, *.bam (output - 2)
+#   |
+#   |-bam_tags
+#   |   |-libtype.lib (library type for each bam files)
+#   |   |-scan_cutoff
+#   |   |   |-50
+#   |   |   |-100
+#   |   |   |-1000
+#   |   |   |-10000
+#   |   |   |-100000
+#   |   |   |-update
+#   |   |   |   |-comp
+#   |   |   |   |-stay
+#   |   |   |   |-output (contain tag files)
 #   |   
-#   |-merge_tags
-#   |   |-Lib01
-#   |   |  |-RNAz_out
-#   |   |  |  |-best_RNAz.bed, best_hits.txt, SeqFA/
-#   |   |  |-tag.newID.bed, tag.newID.pos_sRNA.count.txt, ...
-#   |
 #   |-report
 #   |   |-Lib01.report.txt, Lib02.report.txt, ...       
 #
@@ -1176,5 +1292,13 @@ Command: stat   count mapping reads for each BAM
 # v0.5
 #    1. replace HTSeq-count by FeatureCounts to count reads on each sRNAs. (much faster)
 #    2. change para for featureCounts: -M --fraction count reads 1/n
+# 
+# 2015-12-30
+# v0.6
+#    1. Reconstruct this perl script, delete the time consuming steps: generating fwd/rev.bam, fwd/rev.coverage files.
+#    2. Introduce a new file_folder structure: "bam_stat", "bam_subdir", "bam_coverage", "bam_view", "bam_tags"
+#    3. Scan the cutoff values in this perl script
+#    4. Support input lib_file that contain the library types for each bam file
 #
 # Author: Wang Ming, wangmcas@gmail.com
+### END ###

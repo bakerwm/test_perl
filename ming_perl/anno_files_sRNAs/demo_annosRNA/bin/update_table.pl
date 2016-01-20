@@ -1,0 +1,1 @@
+/home/wangming/work/bin/temp/update_table.pl
