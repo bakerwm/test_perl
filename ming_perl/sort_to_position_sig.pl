@@ -16,9 +16,24 @@ use Data::Dumper;
 #   replace [\w+] by [.*].                                           #
 ######################################################################
 
+sub usage {
+    die("
+Usage: $0 [options] <input.txt> 
+
+Options: -g  <STR>          : the annotation of the genome, in GFF format
+         -t  <STR>          : the feature from the GFF file, default [gene]
+         -f  <STR>          : the reference genome in fasta format
+Example:
+perl $0 -g NC_000962.gff -t gene -f NC_000962.fna in.txt > out.txt
+\n");
+}
+
+
+
 my %opts = (t => "gene");
 getopts("f:t:g:", \%opts);
-die "Usage: perl $0 [-g] <genome.gff> [-f] <ref.fa> input.txt > out.txt" if (@ARGV != 1);
+usage() if(@ARGV != 1);
+#die "Usage: perl $0 [-g] <genome.gff> [-f] <ref.fa> input.txt > out.txt" if (@ARGV != 1);
 
 my $in_gff = $opts{g};
 my $in_fa  = $opts{f};

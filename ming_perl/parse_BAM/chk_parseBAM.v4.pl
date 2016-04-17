@@ -1328,5 +1328,5 @@ Command: stat   count mapping reads for each BAM
 #    3. Scan the cutoff values in this perl script
 #    4. Support input lib_file that contain the library types for each bam file
 #
-# Author: Wang Ming, wangmcas@gmail.com
+# Author: Wang Ming, wangmcas(AT)gmail.com
 ### END ###
