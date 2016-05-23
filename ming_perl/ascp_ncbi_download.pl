@@ -17,19 +17,19 @@ use File::Spec::Functions qw(catdir);
 use File::Path qw(make_path);
 use Getopt::Std;
 
-my $ascp_exe = '~/.aspera/connect/bin/ascp';
-my $ascp_key_openssh = '~/.aspera/connect/etc/asperaweb_id_dsa.openssh';
+my $ascp_exe = '$HOME/.aspera/connect/bin/ascp';
+my $ascp_key_openssh = '$HOME/.aspera/connect/etc/asperaweb_id_dsa.openssh';
 
 ascp_download();
 exit(1);
 
 # main script
 sub ascp_download {
-    my %opts = (t => 'bac', m => '1'); # tyep: sra, bac
+    my %opts = (t => 'sra', m => '1'); # tyep: sra, bac
     getopts("t:o:m:d:", \%opts);
     usage() if(@ARGV != 1);
     die("[-o] Need specify the output dir:\n") if(! defined $opts{o});
-    die("[-t $opts{t}] Unknown type. support: [sra, bac]") if(! $opts{t} =~ /^(sra|bac)$/);
+    die("[-t $opts{t}] Unknown type. support: [sra, bac]") if(! $opts{t} =~ /^(sra|bac)$/i);
     make_path($opts{o}) if(! -d $opts{o});
     # search mode
     die("[-m $opts{m}] Unknown mode. support: [1, 2]\n") if(! $opts{m} =~ /^(1|2)$/);
@@ -148,7 +148,7 @@ Usage: ascp_download.pl [options] <input>
 
 Options: -o <str>   : output dir for download files
          -t <str>   : Type of download file: 
-                      sra=SRA data, bac=genome data, [default: bac]
+                      sra=SRA data, bac=genome data, [default: sra]
          -m <int>   : the mode to search the string name, 
                       1=full name, 2=part name, [default: 1]
          -d <str>   : the index file contain full bacteria list in ncbi
