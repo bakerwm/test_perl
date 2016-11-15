@@ -1,15 +1,13 @@
 #!/usr/bin/perl -w
 
 ##################################################
-# Download NCBI data using Aspera
-#
-# 1. SRA data. 
-# 2. Bacteria genomes.
-#
-# Modify: change -l 200m to -l 8m; limit max rate in line 124 
-#
-# Wang Ming wangmcas(AT)gmail.com
-# 2015-06-22
+# Download NCBI data using Aspera                #
+#                                                #
+# 1. SRA data.                                   #
+# 2. Bacteria genomes.                           #
+#                                                #
+# Wang Ming wangmcas(AT)gmail.com                #
+# 2015-06-22                                     #
 ##################################################
 
 use strict;
@@ -19,15 +17,15 @@ use File::Spec::Functions qw(catdir);
 use File::Path qw(make_path);
 use Getopt::Std;
 
-my $ascp_exe = '$HOME/.aspera/connect/bin/ascp';
-my $ascp_key_openssh = '$HOME/.aspera/connect/etc/asperaweb_id_dsa.openssh';
+my $ascp_exe = '~/.aspera/connect/bin/ascp';
+my $ascp_key_openssh = '~/.aspera/connect/etc/asperaweb_id_dsa.openssh';
 
 ascp_download();
 exit(1);
 
 # main script
 sub ascp_download {
-    my %opts = (t => 'sra', m => '1'); # tyep: sra, bac
+    my %opts = (t => 'bac', m => '1'); # tyep: sra, bac
     getopts("t:o:m:d:", \%opts);
     usage() if(@ARGV != 1);
     die("[-o] Need specify the output dir:\n") if(! defined $opts{o});
@@ -86,7 +84,8 @@ sub read_input {
         while(<$fh_in>) {
             chomp;
             next if(/(^\#)|(^\s*$)/);
-            $ids{$_} ++;
+            my $id = (split /\s+/, $_)[0];
+            $ids{$id} ++;
         }
         close $fh_in;
         die("[$in] : No ids found\n") if((keys %ids) < 1);
@@ -121,7 +120,7 @@ sub id_to_ascprun {
     }else {
         #
     }
-    my $ncbi_ascp_para   = join(' ', $ascp_exe, '-i', $ascp_key_openssh, '-q -k 1 -T -l 8m'); # change from 200m to 8m
+    my $ncbi_ascp_para   = join(' ', $ascp_exe, '-i', $ascp_key_openssh, '-q -k 1 -T -l200m');
     my $ncbi_ascp_domain = 'anonftp@ftp.ncbi.nlm.nih.gov:';
     my $cmd_line = join(' ', $ncbi_ascp_para, $ncbi_ascp_domain . $ncbi_ascp_url, $out_path);
     return $cmd_line;
@@ -150,7 +149,7 @@ Usage: ascp_download.pl [options] <input>
 
 Options: -o <str>   : output dir for download files
          -t <str>   : Type of download file: 
-                      sra=SRA data, bac=genome data, [default: sra]
+                      sra=SRA data, bac=genome data, [default: bac]
          -m <int>   : the mode to search the string name, 
                       1=full name, 2=part name, [default: 1]
          -d <str>   : the index file contain full bacteria list in ncbi

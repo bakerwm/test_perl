@@ -117,7 +117,7 @@ if($tb =~ /gff/s){
 #        $tail = '-' unless($tail);
 ## 1-st base numbered 0
         $start -= 1;
-        $end -= 1;
+#        $end -= 1; # start 0-index, end 1-index
         $chr = $strain if($strain);
         my $line = join "\t", ($chr, $start, $end, $n, $length, $strand, $tail);
         push @out, $line;
@@ -219,7 +219,7 @@ sub read_bed{
         my ($chrom, $start, $end, $name, $cont, $strand, $tail) = split /\t/, $i, 7;
         $tail = ' ' unless($tail);
         $start += 1; ## BED first base = 0;
-        $end += 1; ## BED first base = 0;
+#        $end += 1; ## BED first base = 1;
         my $length = $end - $start + 1;
         $out{$name} = join "\t", ($chrom, $length, $start, $end, $strand, $tail);
         $count ++;
