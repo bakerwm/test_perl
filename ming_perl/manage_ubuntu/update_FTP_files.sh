@@ -1,97 +1,127 @@
 #!/bin/bash
 
-# This script will automaically execute twice a day (6:00 an 18:00)
+# This script will automaically execute erveryday @3:59 AM
 # edit file (sudo) /etc/crontab to change the time
+# 59 3 * * * root bash /home/wangming/bin/update_FTP_files.sh >> /data/yulab_ftp/.log/update.stats
 
-
-# change the permission and owner:group of files in /data/yulab_ftp/Share
+# change the permission /data/yulab_ftp/Share (rwxrwx---)
 #
 # Files:
-# permission: rw-r--r--
+# permission: rw-r-----
 # ownership:  wangming:yulab
 #
 # Folders:
-# permission: rwxr-xr-x
+# permission: rwxrwx---
 # ownership:  wangming:yulab
-# 2016-10-26
+#
+# Backup (hourly)
+# 1. create a backup archive
+# 2. update only new files, and create a backup
+#
+# 2017-06-14 version 0.4
+# Illustrate the workflow
+# 1. backup directories:
+# from: /data/yulab_ftp/Share
+# to:   /data/yulab_ftp/Archive/Share_backup
+# 
+# 2. change permissions
+#   a) Share/
+#      dirs: 770
+#      regular files: 640
+#      symbolic links: 777
+#   b) Share.backup/
+#      ower: yuftp:yulab
+#      dirs: 750
+#      regular files: 640
+#      symbolic links: 777
+#   c) other folders/
+#      ower: yuftp:yulab
+#      dirs: 750
+#      regular files: 640
+#      symbolic links: 777
+# 2016-12-02 version 0.3
+#   - add backup function
+#   - hourly update (*:59)
+# 2016-10-26 version 0.2
+#   - rewrite update function
+#   - daily update (4:00 am)
 
-function update_file {
-    FT=(`stat -c "%A %U %G" "$1"`) # drwxr-xr-x wangming yulab
-    FRIGHT=${FT[0]}
-    FOWNER=${FT[1]}
-    FGROUP=${FT[2]}
-    ## Target
-    TRIGHT="rwxr-xr-x"
-    T1="pass" ; T2="pass" ; T3="pass"
-    if [[ $FRIGHT == d* ]] ; then 
-    # Directory
-        [[ $FRIGHT != drwxr-x--- ]] && chmod 750 $1 && T1="${FRIGHT}"
-        [[ $FOWNER != yuftp ]] && chown yuftp $1 && T2="${FOWNER}"
-        [[ $FGROUP != yulab ]] && chgrp yulab $1 && T3="${FGROUP}"
-        echo -e "D: $T1\t$T2\t$T3\t$1"
-    elif [[ $FRIGHT == -* ]] ; then
-    # Regular file
-        [[ $FRIGHT != -rw-r----- ]] && chmod 640 $1 && T1="${FRIGHT}"
-        [[ $FOWNER != yuftp ]] && chown yuftp $1 && T2="${FOWNER}"
-        [[ $FGROUP != yulab ]] && chgrp yulab $1 && T3="${FGROUP}"
-        echo -e "F: $T1\t$T2\t$T3\t$1"
-    elif [[ $FRIGHT == l* ]] ; then
-    # Symbolic link
-        chown 777 $1
-        echo -e "L: $T1\t$T2\t$T3\t$1"
-    else
-        echo -e "X: Not recognized\t$1"
-    fi
+##===============##
+## global config ##
+##===============##
+ftpdir="/data/yulab_ftp"
+share="${ftpdir}/Share"
+shareBackup="${ftpdir}/Archive/Share_backup"
+logdir="${HOME}/work/bin/temp/manage_ubuntu/logs"
+
+## 1. rename files with blanks in name 
+function renameFiles {
+    # replace the blanks in the file name
+    indir=$1
+    [[ ! -d ${indir} ]] && echo "dir not exists - [${indir}]" && exit 1
+    # list all files
+    tmpfile="/tmp/$$.update_files.list"
+    find ${indir} -type f > ${tmpfile}
+    while read line ; do 
+        dir=$(dirname "${line}")
+        prefix=$(basename "${line}")
+        prefixnew=${prefix// /.}
+        fnew="${dir}/${prefixnew}"
+        if [[ "${line}" != ${fnew} ]] ; then
+            mv -f "${line}" ${fnew}
+            echo "rename: [${line}] [${fnew}]"
+        fi
+    done < ${tmpfile}
+    rm ${tmpfile}
 }
 
-############
-## config ##
-############
-BASE_DIR="/data/yulab_ftp"
-#BASE_DIR="/home/wangming/work/test"
-SHARE_DIR=${BASE_DIR}/Share
-##
-DT_Y=`date "+%Y"`
-DT_M=`date "+%m"`
-DT_D=`date "+%d"`
-DT_T=`date "+%H%M%S"`
-LOG_DIR="${BASE_DIR}/.log/${DT_Y}/${DT_M}"
-LOG_FILE="${LOG_DIR}/${DT_Y}${DT_M}${DT_D}_${DT_T}.log"
-LOG_TEMP="${LOG_DIR}/${DT_Y}${DT_M}${DT_D}_${DT_T}.temp"
-LOG_ERR="${LOG_DIR}/${DT_Y}${DT_M}${DT_D}_${DT_T}.err"
-[[ ! -d $LOG_DIR ]] && mkdir -p $LOG_DIR
-## search - 1st
-find $SHARE_DIR > $LOG_TEMP 2> $LOG_ERR
-## update files
-while read LINE
-do
-    # consider blanks in fliename
-    echo "$LINE" | rename -e 's/ |\?/./g' 
-    update_file "$LINE" >> $LOG_FILE
-done < $LOG_TEMP
+function renameDirs {
+    # replace the blanks in the dirname
+    indir=$1
+    [[ ! -d ${indir} ]] && echo "dir not exists - [${indir}]" && exit 1
+    # move files to new dir in each depth
+    for n in {1..10} ; do # suppose max 10 levels of depth
+        # list all dirs
+        tmpdir="/tmp/$$.update_dirs.list"
+        find ${indir} -maxdepth ${n} -type d > ${tmpdir}
+        while read line ; do 
+            dir=$(dirname "${line}")
+            prefix=$(basename "${line}")
+            prefixnew=${prefix// /.}
+            dnew="${dir}/${prefixnew}"
+            if [[ "${line}" != ${dnew} ]] ; then
+                mv -f "${line}" ${dnew}
+                echo "rename: [${line}] [${dnew}]"
+            fi
+        done < ${tmpdir}
+        rm ${tmpdir}
+    done
+}
 
-## update folders that failed to access
-for i in $(seq 1 4) # go further 4-level in that directory
-do
-    DT_F=`date "+%Y-%m-%d %H:%M:%S"`
-    ERR_LINE=`wc -l $LOG_ERR | cut -d" " -f 1`
-    [ $ERR_LINE == 0 ] && echo "## Finish @ $DT_F" && break 
-    DIR_N=()
-    while read DL
-    do
-        DN=($DL)
-        DT=${DN%\'}
-        DT=${DT#\`}
-        DIR_N+=($DT)
-    done < $LOG_ERR
-    EXT_DD=$(IFS=" "; echo "${DIR_N[*]}")
-    find $EXT_DO > ${LOG_TEMP}.$i 2> $LOG_ERR
-    while read LINE
-    do
-        update_file $LINE
-    done < ${LOG_TEMP}.$i
-    rm ${LOG_TEMP}.$i $LOG_ERR
-done
-rm $LOG_TEMP
+## 1. rename files in Share/
+renameDirs ${share}
+renameFiles ${share}
+
+## 2. update owership of files in Share/
+find ${share} -type d | xargs chmod 777
+find ${share} -type f | xargs chmod 640 
+[[ $(find ${share} -type l | wc -l) -gt 0 ]] && find ${share} -type l | xargs chmod 777
+
+## 3. backup Share/
+rsync -avq --exclude "Old_files" --max-size=100m ${share}/ ${shareBackup}/ 
+
+## 4. update owership and permission in Share_backup/
+find ${shareBackup} -type d | xargs chmod 750
+find ${shareBackup} -type f | xargs chmod 640
+[[ $(find ${shareBackup} -type l | wc -l) -gt 0 ]] && find ${shareBackup} -type l | xargs chmod 777
+find ${shareBackup} | xargs chown yuftp:yulab 
+
+################################################################################
+### Sync /data/yulab_ftp/Share/Papers/ to /data/yulab_ftp/For_intern/Papers/
+################################################################################
+rsync -avq /data/yulab_ftp/Share/Papers/ /data/yulab_ftp/For_intern/Papers/
+chown -R stu01:intern /data/yulab_ftp/For_intern/Papers/
+
+echo "Finish @ $(date "+%Y-%m-%d %H:%M:%S")"
 
 ## EOF

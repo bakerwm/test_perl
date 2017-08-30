@@ -4,28 +4,28 @@
 
 
 ## Add user [id], create [HOME], assign to [group]
-#sudo useradd -g [group] -m -s /bin/bash -d [HOME] [id]
+#sudo useradd -g [group] -m -s /bin/bash -d [HOME] [user]
 
 ## Assign password
-#sudo passwd [id]
+#sudo passwd [user]
 
 ## Add user to exist [group]
-#sudo usermod -G [group] [id]
-#sudo gpasswd -a [id] [group]
+#sudo usermod -G [group] [user]
+#sudo gpasswd -a [user] [group]
 
 
-## Lock user [id]
-#sudo passwd -l [id]
+## Lock user [user]
+#sudo passwd -l [user]
 
-## Unlock user [id]
-#sudo passwd -u [id]
+## Unlock user [user]
+#sudo passwd -u [user]
 
 
 ## Delete user and it's HOME
-#sudo userdel --remove [id]
+#sudo userdel --remove [user]
 
 ## Remove user from [group]
-#sudo gpasswd -d [id] [group]
+#sudo gpasswd -d [user] [group]
 
 
 ## Add FTP users (do not create home directory)

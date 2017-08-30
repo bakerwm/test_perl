@@ -23,7 +23,7 @@ my $ascp_exe = '$HOME/.aspera/connect/bin/ascp';
 my $ascp_key_openssh = '$HOME/.aspera/connect/etc/asperaweb_id_dsa.openssh';
 
 ascp_download();
-exit(1);
+#exit(1);
 
 # main script
 sub ascp_download {
@@ -86,6 +86,7 @@ sub read_input {
         while(<$fh_in>) {
             chomp;
             next if(/(^\#)|(^\s*$)/);
+            s/\s//g; # remove blanks
             $ids{$_} ++;
         }
         close $fh_in;
@@ -121,7 +122,7 @@ sub id_to_ascprun {
     }else {
         #
     }
-    my $ncbi_ascp_para   = join(' ', $ascp_exe, '-i', $ascp_key_openssh, '-q -k 1 -T -l 8m'); # change from 200m to 8m
+    my $ncbi_ascp_para   = join(' ', $ascp_exe, '-i', $ascp_key_openssh, '-q -k 1 -T -l 80m'); # change from 200m to 8m
     my $ncbi_ascp_domain = 'anonftp@ftp.ncbi.nlm.nih.gov:';
     my $cmd_line = join(' ', $ncbi_ascp_para, $ncbi_ascp_domain . $ncbi_ascp_url, $out_path);
     return $cmd_line;
@@ -139,7 +140,8 @@ sub srr_id_url {
 # generate url for bacteria genomes
 sub bac_genome_url { # download the folder
     my $id = shift(@_);
-    my $bac_path_prefix  = '/genomes/Bacteria';
+#    my $bac_path_prefix  = '/genomes/Bacteria';
+    my $bac_path_prefix  = '/genomes/archive/old_refseq/Bacteria'; # updated: NCBI move Bacteria to old.archive
     my $ncbi_bac_url     = join('/', $bac_path_prefix, $id);
     return $ncbi_bac_url;
 }
